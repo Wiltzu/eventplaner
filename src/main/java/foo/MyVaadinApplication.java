@@ -23,29 +23,29 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * The Application's "main" class
+ * The Application's "main" class Test comment! --Brigesh
  */
 @SuppressWarnings("serial")
 public class MyVaadinApplication extends UI {
 
     @Override
     public void init(VaadinRequest request) {
-        final VerticalLayout layout = new VerticalLayout();
-        setContent(layout);
-        Button button = new Button("Click Me");
-        button.addClickListener(new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                layout.addComponent(new Label("Thank you for clicking!!!!"));
-            }
-        });
-        Button jason = new Button("kick me");
-        jason.addClickListener(new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                layout.addComponent(new Label("Thank you for kicking!!!!"));
-            }
-        });
-        layout.addComponent(button);
-        layout.addComponent(jason);
+	final VerticalLayout layout = new VerticalLayout();
+	setContent(layout);
+	Button button = new Button("Click Me");
+	button.addClickListener(new Button.ClickListener() {
+	    public void buttonClick(ClickEvent event) {
+		layout.addComponent(new Label("Thank you for clicking!!!!"));
+	    }
+	});
+	Button jason = new Button("kick me");
+	jason.addClickListener(new Button.ClickListener() {
+	    public void buttonClick(ClickEvent event) {
+		layout.addComponent(new Label("Thank you for kicking!!!!"));
+	    }
+	});
+	layout.addComponent(button);
+	layout.addComponent(jason);
 
     }
 
