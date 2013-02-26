@@ -22,11 +22,15 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
@@ -39,7 +43,8 @@ public class MyVaadinApplication extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        initLayout();
+        login();
+        // initLayout();
     }
 
     private void initLayout() {
@@ -111,7 +116,7 @@ public class MyVaadinApplication extends UI {
 
         Label temporary = new Label("Side Panel Here");
 
-        Button login = new Button("Login");
+        Button login = new Button("Log out");
         Button register = new Button("Register");
         Button createNewEvent = new Button("Create new event!");
 
@@ -119,6 +124,9 @@ public class MyVaadinApplication extends UI {
         vv.addComponent(register);
         vv.addComponent(login);
         vv.addComponent(createNewEvent);
+
+        login.setWidth("130");
+        register.setWidth("130");
 
         sidePanel.setContent(vv);
 
@@ -175,6 +183,45 @@ public class MyVaadinApplication extends UI {
         bottomBanner.setContent(v);
 
         return bottomBanner;
+    }
+
+    // Uutta shaibaa
+    protected void login() {
+        final VerticalLayout logInLayout = new VerticalLayout();
+
+        logInLayout.setMargin(true);
+
+        setContent(logInLayout);
+
+        final TextField userName = new TextField("Username:");
+        final PasswordField password = new PasswordField("Password");
+
+        Button button = new Button("Log in");
+        button.addClickListener(new Button.ClickListener() {
+            public void buttonClick(ClickEvent event) {
+                /**
+                 * TEMPORARY SOLLUTION
+                 * 
+                 * TODO: Add inputcheck for username and password
+                 * 
+                 */
+                if (userName.getValue().equals("")
+                        || password.getValue().equals("")) {
+                    Notification.show("Type something to the textfields",
+                            Notification.TYPE_WARNING_MESSAGE);
+
+                } else {
+                    Notification.show("Teretulemast " + userName.getValue(),
+                            Notification.TYPE_HUMANIZED_MESSAGE);
+                    logInLayout.setVisible(false);
+                    initLayout();
+                }
+            }
+        });
+        logInLayout.addComponent(userName);
+        logInLayout.addComponent(password);
+        logInLayout.addComponent(button);
+
     }
 
 }
