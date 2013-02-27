@@ -200,7 +200,9 @@ public class MyVaadinApplication extends UI {
 	private TabSheet initContentTab() {
 		TabSheet tabsheet = new TabSheet();
 		tabsheet.setSizeFull();
-		tabsheet.addTab(new Table("Users", users), "My Events");
+		Table userTable = new Table("Users", users);
+		userTable.setVisibleColumns(new String[]{"id", "name", "password"});
+		tabsheet.addTab(userTable, "My Events");
 		tabsheet.addTab(new Table("Events", events), "Friend's Events");
 		tabsheet.addTab(new Label("Contents of the third tab"),
 				"My Past events");
