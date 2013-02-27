@@ -23,6 +23,7 @@ import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -41,187 +42,194 @@ import com.vaadin.ui.themes.Reindeer;
 @SuppressWarnings("serial")
 public class MyVaadinApplication extends UI {
 
-    @Override
-    protected void init(VaadinRequest request) {
-        login();
-        // initLayout();
-    }
 
-    private void initLayout() {
-        VerticalLayout v = new VerticalLayout();
-        v.setStyleName(Reindeer.LAYOUT_BLUE);
-        v.setSpacing(false);
-        setContent(v);
+	@Override
+	protected void init(VaadinRequest request) {
+		// login();
+		initLayout();
+	}
 
-        Panel topBanner = initTopBanner();
-        v.addComponent(topBanner);
-        v.setComponentAlignment(topBanner, Alignment.TOP_CENTER);
+	private void initLayout() {
+		VerticalLayout v = new VerticalLayout();
+		v.setStyleName(Reindeer.LAYOUT_BLUE);
+		v.setSpacing(false);
+		setContent(v);
 
-        // Panel userPanel = initUserPanel();
-        // v.addComponent(userPanel);
-        // v.setComponentAlignment(userPanel, Alignment.TOP_CENTER);
+		Panel topBanner = initTopBanner();
+		v.addComponent(topBanner);
+		v.setComponentAlignment(topBanner, Alignment.TOP_CENTER);
 
-        Panel middlePanel = initMiddlePanel();
-        v.addComponent(middlePanel);
-        v.setComponentAlignment(middlePanel, Alignment.MIDDLE_CENTER);
+		// Panel userPanel = initUserPanel();
+		// v.addComponent(userPanel);
+		// v.setComponentAlignment(userPanel, Alignment.TOP_CENTER);
 
-        Panel bottomBanner = initBottomBanner();
-        v.addComponent(bottomBanner);
-        v.setComponentAlignment(bottomBanner, Alignment.BOTTOM_CENTER);
-    }
+		Panel middlePanel = initMiddlePanel();
+		v.addComponent(middlePanel);
+		v.setComponentAlignment(middlePanel, Alignment.MIDDLE_CENTER);
 
-    private Panel initMiddlePanel() {
-        HorizontalLayout h = new HorizontalLayout();
+		Panel bottomBanner = initBottomBanner();
+		v.addComponent(bottomBanner);
+		v.setComponentAlignment(bottomBanner, Alignment.BOTTOM_CENTER);
+	}
 
-        Panel sidePanel = initSidePanel();
-        h.addComponent(sidePanel);
-        h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
+	private Panel initMiddlePanel() {
+		HorizontalLayout h = new HorizontalLayout();
 
-        TabSheet contentTab = initContentTab();
-        contentTab.setSizeFull();
-        h.addComponent(contentTab);
-        h.setComponentAlignment(contentTab, Alignment.TOP_CENTER);
+		Panel sidePanel = initSidePanel();
+		h.addComponent(sidePanel);
+		h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
 
-        Panel middlePanel = new Panel();
-        middlePanel.setContent(h);
+		TabSheet contentTab = initContentTab();
+		contentTab.setSizeFull();
+		h.addComponent(contentTab);
+		h.setComponentAlignment(contentTab, Alignment.TOP_CENTER);
 
-        return middlePanel;
-    }
+		Panel middlePanel = new Panel();
+		middlePanel.setContent(h);
 
-    private Panel initTopBanner() {
-        Panel topBanner = new Panel();
-        topBanner.setWidth("100%");
+		return middlePanel;
+	}
 
-        String basepath = VaadinService.getCurrent().getBaseDirectory()
-                .getAbsolutePath();
+	private Panel initTopBanner() {
+		Panel topBanner = new Panel();
+		topBanner.setWidth("100%");
 
-        FileResource resource = new FileResource(new File(basepath
-                + "/WEB-INF/images/topBannerPlaceholder.png"));
+		String basepath = VaadinService.getCurrent().getBaseDirectory()
+				.getAbsolutePath();
 
-        Embedded image = new Embedded("TopBanner placeholder image", resource);
+		FileResource resource = new FileResource(new File(basepath
+				+ "/WEB-INF/images/topBannerPlaceholder.png"));
 
-        VerticalLayout v = new VerticalLayout();
-        v.addComponent(image);
-        topBanner.setContent(v);
+		Embedded image = new Embedded("TopBanner placeholder image", resource);
 
-        return topBanner;
-    }
+		VerticalLayout v = new VerticalLayout();
+		v.addComponent(image);
+		topBanner.setContent(v);
 
-    private Panel initSidePanel() {
-        Panel sidePanel = new Panel();
-        sidePanel.setHeight("100%");
+		return topBanner;
+	}
 
-        VerticalLayout vv = new VerticalLayout();
-        vv.setStyleName(Reindeer.LAYOUT_WHITE);
+	private Panel initSidePanel() {
+		Panel sidePanel = new Panel();
+		sidePanel.setHeight("100%");
 
-        Label temporary = new Label("Side Panel Here");
+		VerticalLayout vv = new VerticalLayout();
+		vv.setStyleName(Reindeer.LAYOUT_WHITE);
 
-        Button login = new Button("Log out");
-        Button register = new Button("Register");
-        Button createNewEvent = new Button("Create new event!");
+		Label temporary = new Label("Side Panel Here");
 
-        vv.addComponent(temporary);
-        vv.addComponent(register);
-        vv.addComponent(login);
-        vv.addComponent(createNewEvent);
+		Button login = new Button("Log out");
+		login.addClickListener(new ClickListener() {
 
-        login.setWidth("130");
-        register.setWidth("130");
+			@Override
+			public void buttonClick(ClickEvent event) {
+			}
+		});
+		Button register = new Button("Register");
+		Button createNewEvent = new Button("Create new event!");
 
-        sidePanel.setContent(vv);
+		vv.addComponent(temporary);
+		vv.addComponent(register);
+		vv.addComponent(login);
+		vv.addComponent(createNewEvent);
 
-        return sidePanel;
-    }
+		login.setWidth("130");
+		register.setWidth("130");
 
-    private Panel initUserPanel() {
-        Panel userPanel = new Panel();
-        userPanel.setWidth("100%");
+		sidePanel.setContent(vv);
 
-        HorizontalLayout v = new HorizontalLayout();
-        v.setStyleName(Reindeer.LAYOUT_WHITE);
+		return sidePanel;
+	}
 
-        Label temporary = new Label("User Panel Here");
+	private Panel initUserPanel() {
+		Panel userPanel = new Panel();
+		userPanel.setWidth("100%");
 
-        Button viewMyEvents = new Button("My Events");
-        Button viewFriendEvents = new Button("Friend's Events");
+		HorizontalLayout v = new HorizontalLayout();
+		v.setStyleName(Reindeer.LAYOUT_WHITE);
 
-        v.addComponent(viewMyEvents);
-        v.addComponent(viewFriendEvents);
-        v.addComponent(temporary);
-        userPanel.setContent(v);
+		Label temporary = new Label("User Panel Here");
 
-        return userPanel;
-    }
+		Button viewMyEvents = new Button("My Events");
+		Button viewFriendEvents = new Button("Friend's Events");
 
-    private TabSheet initContentTab() {
-        TabSheet tabsheet = new TabSheet();
-        tabsheet.setSizeFull();
-        tabsheet.addTab(new Label("Contents of the first tab"), "My Events");
-        tabsheet.addTab(new Label("Contents of the first tab"),
-                "Friend's Events");
-        tabsheet.addTab(new Label("Contents of the first tab"),
-                "My Past events");
+		v.addComponent(viewMyEvents);
+		v.addComponent(viewFriendEvents);
+		v.addComponent(temporary);
+		userPanel.setContent(v);
 
-        return tabsheet;
-    }
+		return userPanel;
+	}
 
-    private Panel initBottomBanner() {
-        Panel bottomBanner = new Panel();
-        bottomBanner.setWidth("100%");
+	private TabSheet initContentTab() {
+		TabSheet tabsheet = new TabSheet();
+		tabsheet.setSizeFull();
+		tabsheet.addTab(new Label("Contents of the first tab"), "My Events");
+		tabsheet.addTab(new Label("Contents of the second tab"),
+				"Friend's Events");
+		tabsheet.addTab(new Label("Contents of the third tab"),
+				"My Past events");
 
-        String basepath = VaadinService.getCurrent().getBaseDirectory()
-                .getAbsolutePath();
+		return tabsheet;
+	}
 
-        FileResource resource = new FileResource(new File(basepath
-                + "/WEB-INF/images/topBannerPlaceholder.png"));
+	private Panel initBottomBanner() {
+		Panel bottomBanner = new Panel();
+		bottomBanner.setWidth("100%");
 
-        Embedded image = new Embedded("BottomBanner placeholder image",
-                resource);
+		String basepath = VaadinService.getCurrent().getBaseDirectory()
+				.getAbsolutePath();
 
-        VerticalLayout v = new VerticalLayout();
-        v.addComponent(image);
-        bottomBanner.setContent(v);
+		FileResource resource = new FileResource(new File(basepath
+				+ "/WEB-INF/images/topBannerPlaceholder.png"));
 
-        return bottomBanner;
-    }
+		Embedded image = new Embedded("BottomBanner placeholder image",
+				resource);
 
-    // Uutta shaibaa
-    protected void login() {
-        final VerticalLayout logInLayout = new VerticalLayout();
+		VerticalLayout v = new VerticalLayout();
+		v.addComponent(image);
+		bottomBanner.setContent(v);
 
-        logInLayout.setMargin(true);
+		return bottomBanner;
+	}
 
-        setContent(logInLayout);
+	// Uutta shaibaa
+	protected void login() {
+		final VerticalLayout logInLayout = new VerticalLayout();
 
-        final TextField userName = new TextField("Username:");
-        final PasswordField password = new PasswordField("Password");
+		logInLayout.setMargin(true);
 
-        Button button = new Button("Log in");
-        button.addClickListener(new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                /**
-                 * TEMPORARY SOLLUTION
-                 * 
-                 * TODO: Add inputcheck for username and password
-                 * 
-                 */
-                if (userName.getValue().equals("")
-                        || password.getValue().equals("")) {
-                    Notification.show("Type something to the textfields",
-                            Notification.TYPE_WARNING_MESSAGE);
+		setContent(logInLayout);
 
-                } else {
-                    Notification.show("Teretulemast " + userName.getValue(),
-                            Notification.TYPE_HUMANIZED_MESSAGE);
-                    logInLayout.setVisible(false);
-                    initLayout();
-                }
-            }
-        });
-        logInLayout.addComponent(userName);
-        logInLayout.addComponent(password);
-        logInLayout.addComponent(button);
+		final TextField userName = new TextField("Username:");
+		final PasswordField password = new PasswordField("Password");
 
-    }
+		Button button = new Button("Log in");
+		button.addClickListener(new Button.ClickListener() {
+			public void buttonClick(ClickEvent event) {
+				/**
+				 * TEMPORARY SOLLUTION
+				 * 
+				 * TODO: Add inputcheck for username and password
+				 * 
+				 */
+				if (userName.getValue().equals("")
+						|| password.getValue().equals("")) {
+					Notification.show("Type something to the textfields",
+							Notification.TYPE_WARNING_MESSAGE);
+
+				} else {
+					Notification.show("Teretulemast " + userName.getValue(),
+							Notification.TYPE_HUMANIZED_MESSAGE);
+					logInLayout.setVisible(false);
+					initLayout();
+				}
+			}
+		});
+		logInLayout.addComponent(userName);
+		logInLayout.addComponent(password);
+		logInLayout.addComponent(button);
+
+	}
 
 }
