@@ -1,6 +1,7 @@
 package foo.domain;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,17 +16,18 @@ public class User {
 	private int id;
 	private String name;
 	private String password;
-	@ManyToMany(mappedBy="partisipants")
-	private List<MyEvent> events;
+	@ManyToMany(mappedBy = "partisipants")
+	private Set<MyEvent> events;
 
 	public User() {
+		events = new HashSet<MyEvent>();
 	}
 
-	public User(int id, String name, String password) {
+	public User(String name, String password) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.password = password;
+		events = new HashSet<MyEvent>();
 	}
 
 	public String getName() {
@@ -50,6 +52,10 @@ public class User {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public void addToEvent(MyEvent event) {
+		this.events.add(event);
 	}
 
 	@Override

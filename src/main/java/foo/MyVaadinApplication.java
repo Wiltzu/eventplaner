@@ -49,20 +49,19 @@ import foo.domain.MyEvent;
 @SuppressWarnings("serial")
 @PreserveOnRefresh
 public class MyVaadinApplication extends UI {
-	
+
 	private JPAContainer<User> users;
 	private JPAContainer<MyEvent> events;
-	
+
 	public MyVaadinApplication() {
 		users = JPAContainerFactory.make(User.class, "database");
 		events = JPAContainerFactory.make(MyEvent.class, "database");
 		addData();
 	}
 
-
 	@Override
 	protected void init(VaadinRequest request) {
-		// login();		
+		// login();
 		initLayout();
 	}
 
@@ -76,12 +75,12 @@ public class MyVaadinApplication extends UI {
 		pekka.setPassword("crypt");
 		users.addEntity(matti);
 		users.addEntity(pekka);
-		
+
 		MyEvent event = new MyEvent("event");
 		event.addPartisipant(pekka);
 		event.addPartisipant(matti);
 		events.addEntity(event);
-		
+
 		events.commit();
 		users.commit();
 	}
@@ -202,8 +201,7 @@ public class MyVaadinApplication extends UI {
 		TabSheet tabsheet = new TabSheet();
 		tabsheet.setSizeFull();
 		tabsheet.addTab(new Table("Users", users), "My Events");
-		tabsheet.addTab(new Label("Contents of the second tab"),
-				"Friend's Events");
+		tabsheet.addTab(new Table("Events", events), "Friend's Events");
 		tabsheet.addTab(new Label("Contents of the third tab"),
 				"My Past events");
 
