@@ -17,6 +17,8 @@ package foo;
 
 import java.io.File;
 
+import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -36,6 +38,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+import foo.domain.User;
+
 /**
  * The Application's "main" class Test comment! --Brigesh
  */
@@ -47,6 +51,7 @@ public class MyVaadinApplication extends UI {
 	protected void init(VaadinRequest request) {
 		// login();
 		initLayout();
+		JPAContainer<User> users = JPAContainerFactory.make(User.class, "database");
 	}
 
 	private void initLayout() {
