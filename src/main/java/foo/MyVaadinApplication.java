@@ -19,6 +19,7 @@ import java.io.File;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -40,17 +41,21 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 import foo.domain.User;
+import foo.domain.MyEvent;
 
 /**
  * The Application's "main" class Test comment! --Brigesh
  */
 @SuppressWarnings("serial")
+@PreserveOnRefresh
 public class MyVaadinApplication extends UI {
 	
 	private JPAContainer<User> users;
+	private JPAContainer<MyEvent> events;
 	
 	public MyVaadinApplication() {
 		users = JPAContainerFactory.make(User.class, "database");
+		events = JPAContainerFactory.make(MyEvent.class, "database");
 		addData();
 	}
 
@@ -71,6 +76,13 @@ public class MyVaadinApplication extends UI {
 		pekka.setPassword("crypt");
 		users.addEntity(matti);
 		users.addEntity(pekka);
+		
+		MyEvent event = new MyEvent("event");
+		event.addPartisipant(pekka);
+		event.addPartisipant(matti);
+		events.addEntity(event);
+		
+		events.commit();
 		users.commit();
 	}
 

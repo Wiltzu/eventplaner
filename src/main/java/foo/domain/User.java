@@ -1,8 +1,11 @@
 package foo.domain;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class User {
@@ -12,6 +15,8 @@ public class User {
 	private int id;
 	private String name;
 	private String password;
+	@ManyToMany(mappedBy="partisipants")
+	private List<MyEvent> events;
 
 	public User() {
 	}
