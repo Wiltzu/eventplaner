@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -16,10 +17,11 @@ public class MyEvent {
 	@GeneratedValue
 	private int id;
 	private String name;
-	@ManyToMany()
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="USER_EVENT",
     joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
     inverseJoinColumns={@JoinColumn(name="EVENT_ID", referencedColumnName="ID")})
+	
 	private Set<User> partisipants;
 	
 	public MyEvent(){
