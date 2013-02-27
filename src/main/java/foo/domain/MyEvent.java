@@ -19,8 +19,8 @@ public class MyEvent {
 	private String name;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="USER_EVENT",
-    joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
-    inverseJoinColumns={@JoinColumn(name="EVENT_ID", referencedColumnName="ID")})
+    joinColumns={@JoinColumn(name="EVENT_ID", referencedColumnName="ID")},
+    inverseJoinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")})
 	
 	private Set<User> partisipants;
 	

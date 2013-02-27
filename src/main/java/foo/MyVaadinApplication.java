@@ -19,7 +19,10 @@ import java.io.File;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.addon.jpacontainer.filter.Filters;
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.data.Container.Filter;
+import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -40,8 +43,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-import foo.domain.User;
 import foo.domain.MyEvent;
+import foo.domain.User;
 
 /**
  * The Application's "main" class Test comment! --Brigesh
@@ -52,6 +55,7 @@ public class MyVaadinApplication extends UI {
 
 	private JPAContainer<User> users;
 	private JPAContainer<MyEvent> events;
+	private MyEvent event;
 
 	public MyVaadinApplication() {
 		users = JPAContainerFactory.make(User.class, "database");
@@ -76,7 +80,7 @@ public class MyVaadinApplication extends UI {
 		users.addEntity(matti);
 		users.addEntity(pekka);
 
-		MyEvent event = new MyEvent("event");
+		event = new MyEvent("event");
 		event.addPartisipant(pekka);
 		event.addPartisipant(matti);
 		events.addEntity(event);
@@ -201,6 +205,10 @@ public class MyVaadinApplication extends UI {
 		TabSheet tabsheet = new TabSheet();
 		tabsheet.setSizeFull();
 		Table userTable = new Table("Users", users);
+		//event id always 6 (now) (event.getId() == 0)
+		users.addContainerFilter(Filters.eq("events.id", 6));
+		users.applyFilters();
+		users.refresh();
 		userTable.setVisibleColumns(new String[]{"id", "name", "password"});
 		tabsheet.addTab(userTable, "My Events");
 		tabsheet.addTab(new Table("Events", events), "Friend's Events");

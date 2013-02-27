@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -16,7 +17,7 @@ public class User {
 	private int id;
 	private String name;
 	private String password;
-	@ManyToMany(mappedBy = "partisipants")
+	@ManyToMany(mappedBy = "partisipants", fetch = FetchType.EAGER)
 	private Set<MyEvent> events;
 
 	public User() {
@@ -52,6 +53,14 @@ public class User {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public Set<MyEvent> getEvents() {
+		return events;
+	}
+
+	public void setEvents(Set<MyEvent> events) {
+		this.events = events;
 	}
 
 	public void addToEvent(MyEvent event) {
