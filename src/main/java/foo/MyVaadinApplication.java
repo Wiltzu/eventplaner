@@ -33,6 +33,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -45,13 +46,32 @@ import foo.domain.User;
  */
 @SuppressWarnings("serial")
 public class MyVaadinApplication extends UI {
+	
+	private JPAContainer<User> users;
+	
+	public MyVaadinApplication() {
+		users = JPAContainerFactory.make(User.class, "database");
+		addData();
+	}
 
 
 	@Override
 	protected void init(VaadinRequest request) {
-		// login();
+		// login();		
 		initLayout();
-		JPAContainer<User> users = JPAContainerFactory.make(User.class, "database");
+	}
+
+	private void addData() {
+		User matti = new User();
+		matti.setName("Ville");
+		matti.setPassword("salainen");
+		users.addEntity(matti);
+		User pekka = new User();
+		pekka.setName("Pekka");
+		pekka.setPassword("crypt");
+		users.addEntity(matti);
+		users.addEntity(pekka);
+		users.commit();
 	}
 
 	private void initLayout() {
@@ -169,7 +189,7 @@ public class MyVaadinApplication extends UI {
 	private TabSheet initContentTab() {
 		TabSheet tabsheet = new TabSheet();
 		tabsheet.setSizeFull();
-		tabsheet.addTab(new Label("Contents of the first tab"), "My Events");
+		tabsheet.addTab(new Table("Users", users), "My Events");
 		tabsheet.addTab(new Label("Contents of the second tab"),
 				"Friend's Events");
 		tabsheet.addTab(new Label("Contents of the third tab"),
