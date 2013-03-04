@@ -53,42 +53,16 @@ import foo.domain.User;
 @PreserveOnRefresh
 public class MyVaadinApplication extends UI {
 
-	private JPAContainer<User> users;
-	private JPAContainer<MyEvent> events;
-	private MyEvent event;
 
 	public MyVaadinApplication() {
-		users = JPAContainerFactory.make(User.class, "database");
-		events = JPAContainerFactory.make(MyEvent.class, "database");
-		addData();
+		
 	}
 
 	@Override
 	protected void init(VaadinRequest request) {
-		// login();
 		initLayout();
 	}
-
-	private void addData() {
-		User matti = new User();
-		matti.setName("Ville");
-		matti.setPassword("salainen");
-		users.addEntity(matti);
-		User pekka = new User();
-		pekka.setName("Pekka");
-		pekka.setPassword("crypt");
-		users.addEntity(matti);
-		users.addEntity(pekka);
-
-		event = new MyEvent("event");
-		event.addPartisipant(pekka);
-		event.addPartisipant(matti);
-		events.addEntity(event);
-
-		events.commit();
-		users.commit();
-	}
-
+	
 	private void initLayout() {
 		VerticalLayout v = new VerticalLayout();
 		v.setStyleName(Reindeer.LAYOUT_BLUE);
@@ -115,14 +89,13 @@ public class MyVaadinApplication extends UI {
 	private Panel initMiddlePanel() {
 		HorizontalLayout h = new HorizontalLayout();
 
-		Panel sidePanel = initSidePanel();
+		SidePanel sidePanel = new SidePanel();
 		h.addComponent(sidePanel);
 		h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
 
-		TabSheet contentTab = initContentTab();
-		contentTab.setSizeFull();
-		h.addComponent(contentTab);
-		h.setComponentAlignment(contentTab, Alignment.TOP_CENTER);
+		ContentPanel content = new ContentPanel();
+		h.addComponent(content);
+		h.setComponentAlignment(content, Alignment.TOP_CENTER);
 
 		Panel middlePanel = new Panel();
 		middlePanel.setContent(h);
@@ -149,38 +122,6 @@ public class MyVaadinApplication extends UI {
 		return topBanner;
 	}
 
-	private Panel initSidePanel() {
-		Panel sidePanel = new Panel();
-		sidePanel.setHeight("100%");
-
-		VerticalLayout vv = new VerticalLayout();
-		vv.setStyleName(Reindeer.LAYOUT_WHITE);
-
-		Label temporary = new Label("Side Panel Here");
-
-		Button login = new Button("Log out");
-		login.addClickListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-			}
-		});
-		Button register = new Button("Register");
-		Button createNewEvent = new Button("Create new event!");
-
-		vv.addComponent(temporary);
-		vv.addComponent(register);
-		vv.addComponent(login);
-		vv.addComponent(createNewEvent);
-
-		login.setWidth("130");
-		register.setWidth("130");
-
-		sidePanel.setContent(vv);
-
-		return sidePanel;
-	}
-
 	private Panel initUserPanel() {
 		Panel userPanel = new Panel();
 		userPanel.setWidth("100%");
@@ -201,23 +142,6 @@ public class MyVaadinApplication extends UI {
 		return userPanel;
 	}
 
-	private TabSheet initContentTab() {
-		TabSheet tabsheet = new TabSheet();
-		tabsheet.setSizeFull();
-		Table userTable = new Table("Users", users);
-		//event id always 6 (now) (event.getId() == 0)
-		users.addContainerFilter(Filters.eq("events.id", 6));
-		users.applyFilters();
-		users.refresh();
-		userTable.setVisibleColumns(new String[]{"id", "name", "password"});
-		tabsheet.addTab(userTable, "My Events");
-		tabsheet.addTab(new Table("Events", events), "Friend's Events");
-		tabsheet.addTab(new Label("Contents of the third tab"),
-				"My Past events");
-
-		return tabsheet;
-	}
-
 	private Panel initBottomBanner() {
 		Panel bottomBanner = new Panel();
 		bottomBanner.setWidth("100%");
@@ -236,45 +160,6 @@ public class MyVaadinApplication extends UI {
 		bottomBanner.setContent(v);
 
 		return bottomBanner;
-	}
-
-	// Uutta shaibaa
-	protected void login() {
-		final VerticalLayout logInLayout = new VerticalLayout();
-
-		logInLayout.setMargin(true);
-
-		setContent(logInLayout);
-
-		final TextField userName = new TextField("Username:");
-		final PasswordField password = new PasswordField("Password");
-
-		Button button = new Button("Log in");
-		button.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-				/**
-				 * TEMPORARY SOLLUTION
-				 * 
-				 * TODO: Add inputcheck for username and password
-				 * 
-				 */
-				if (userName.getValue().equals("")
-						|| password.getValue().equals("")) {
-					Notification.show("Type something to the textfields",
-							Notification.TYPE_WARNING_MESSAGE);
-
-				} else {
-					Notification.show("Teretulemast " + userName.getValue(),
-							Notification.TYPE_HUMANIZED_MESSAGE);
-					logInLayout.setVisible(false);
-					initLayout();
-				}
-			}
-		});
-		logInLayout.addComponent(userName);
-		logInLayout.addComponent(password);
-		logInLayout.addComponent(button);
-
 	}
 
 }
