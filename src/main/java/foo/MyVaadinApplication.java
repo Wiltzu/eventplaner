@@ -53,16 +53,15 @@ import foo.domain.User;
 @PreserveOnRefresh
 public class MyVaadinApplication extends UI {
 
-
 	public MyVaadinApplication() {
-		
+
 	}
 
 	@Override
 	protected void init(VaadinRequest request) {
 		initLayout();
 	}
-	
+
 	private void initLayout() {
 		VerticalLayout v = new VerticalLayout();
 		v.setStyleName(Reindeer.LAYOUT_BLUE);
@@ -72,10 +71,6 @@ public class MyVaadinApplication extends UI {
 		Panel topBanner = initTopBanner();
 		v.addComponent(topBanner);
 		v.setComponentAlignment(topBanner, Alignment.TOP_CENTER);
-
-		// Panel userPanel = initUserPanel();
-		// v.addComponent(userPanel);
-		// v.setComponentAlignment(userPanel, Alignment.TOP_CENTER);
 
 		Panel middlePanel = initMiddlePanel();
 		v.addComponent(middlePanel);
@@ -120,26 +115,6 @@ public class MyVaadinApplication extends UI {
 		topBanner.setContent(v);
 
 		return topBanner;
-	}
-
-	private Panel initUserPanel() {
-		Panel userPanel = new Panel();
-		userPanel.setWidth("100%");
-
-		HorizontalLayout v = new HorizontalLayout();
-		v.setStyleName(Reindeer.LAYOUT_WHITE);
-
-		Label temporary = new Label("User Panel Here");
-
-		Button viewMyEvents = new Button("My Events");
-		Button viewFriendEvents = new Button("Friend's Events");
-
-		v.addComponent(viewMyEvents);
-		v.addComponent(viewFriendEvents);
-		v.addComponent(temporary);
-		userPanel.setContent(v);
-
-		return userPanel;
 	}
 
 	private Panel initBottomBanner() {

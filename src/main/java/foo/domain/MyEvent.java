@@ -18,42 +18,47 @@ public class MyEvent {
 	private int id;
 	private String name;
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name="USER_EVENT",
-    joinColumns={@JoinColumn(name="EVENT_ID", referencedColumnName="ID")},
-    inverseJoinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")})
-	
+	@JoinTable(name = "USER_EVENT", joinColumns = { @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") })
 	private Set<User> partisipants;
-	
-	public MyEvent(){
+
+	public MyEvent() {
 		partisipants = new HashSet<User>();
 	}
-	
+
 	public MyEvent(String name) {
 		super();
 		this.name = name;
 		this.partisipants = new HashSet<User>();
 	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public Set<User> getPartisipants() {
 		return partisipants;
 	}
+
 	public void setPartisipants(Set<User> partisipants) {
 		this.partisipants = partisipants;
 	}
+
 	public void addPartisipant(User user) {
 		this.partisipants.add(user);
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -64,6 +69,7 @@ public class MyEvent {
 				+ ((partisipants == null) ? 0 : partisipants.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -87,10 +93,11 @@ public class MyEvent {
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return "Event [id=" + id + ", name=" + name + ", partisipants="
 				+ partisipants + "]";
 	}
-	
+
 }
