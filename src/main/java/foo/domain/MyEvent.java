@@ -17,13 +17,13 @@ import javax.persistence.OneToOne;
 @Entity
 public class MyEvent {
 	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String name;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "USER_EVENT", joinColumns = { @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") })
 	private Set<User> partisipants;
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER) //default = lazy
 	private Set<Activity> activities;
 	@OneToOne
 	private User creator;
@@ -80,6 +80,14 @@ public class MyEvent {
 	
 	public void addActivity(Activity activity) {
 		this.activities.add(activity);
+	}
+
+	public void setActivities(Set<Activity> activities) {
+		this.activities = activities;
+	}
+
+	public void setCreator(User creator) {
+		this.creator = creator;
 	}
 
 	@Override

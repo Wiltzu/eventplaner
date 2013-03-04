@@ -14,14 +14,14 @@ import javax.persistence.ManyToMany;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String name;
 	private String password;
 	@ManyToMany(mappedBy = "partisipants", fetch = FetchType.EAGER)
 	private Set<MyEvent> events;
-	
-	//for JPA only
+
+	// for JPA only
 	public User() {
 		events = new HashSet<MyEvent>();
 	}
@@ -56,7 +56,7 @@ public class User {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public Set<MyEvent> getEvents() {
 		return events;
 	}

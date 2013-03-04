@@ -16,17 +16,19 @@ public class ContentPanel extends CustomComponent {
 
 	private JPAContainer<User> users;
 	private JPAContainer<MyEvent> events;
+	private JPAContainer<Activity> activitys;
 
 	public ContentPanel() {
 		users = JPAContainerFactory.make(User.class, "database");
 		events = JPAContainerFactory.make(MyEvent.class, "database");
+		activitys = JPAContainerFactory.make(Activity.class, "database");
 		addData();
 
 		TabSheet tabsheet = new TabSheet();
 		tabsheet.setSizeFull();
 		Table userTable = new Table("Users", users);
 		// event id always 6 (now) (event.getId() == 0)
-		users.addContainerFilter(Filters.eq("events.id", 7));
+		users.addContainerFilter(Filters.eq("events.id", 1));
 		users.applyFilters();
 		users.refresh();
 		userTable.setVisibleColumns(new String[] { "id", "name", "password" });
@@ -50,15 +52,19 @@ public class ContentPanel extends CustomComponent {
 		pekka.setPassword("crypt");
 		users.addEntity(matti);
 		users.addEntity(pekka);
+		
+		Activity activity = new Activity("Aktiviteetti", pekka); 
+		activitys.addEntity(activity);
 
 		MyEvent event = new MyEvent("event", pekka);
 		event.addPartisipant(pekka);
 		event.addPartisipant(matti);
-		event.addActivity(new Activity("Aktiviteetti", pekka));
+		event.addActivity(activity);
 		events.addEntity(event);
 
 		events.commit();
 		users.commit();
+		activitys.commit();
 	}
 
 }

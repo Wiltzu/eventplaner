@@ -9,16 +9,17 @@ import javax.persistence.OneToOne;
 @Entity
 public class Activity {
 
-	@GeneratedValue(strategy=GenerationType.TABLE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private int id;
 	private String name;
 	@OneToOne
 	private User creator;
 	
-	//For JPA
-	public Activity(){}
-	
+	// For JPA
+	public Activity() {
+	}
+
 	public Activity(String name, User creator) {
 		super();
 		this.name = name;
@@ -88,7 +89,5 @@ public class Activity {
 		return "Activity [id=" + id + ", name=" + name + ", creator=" + creator
 				+ "]";
 	}
-	
-	
-	
+
 }
