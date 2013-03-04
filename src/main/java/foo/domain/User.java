@@ -20,7 +20,8 @@ public class User {
 	private String password;
 	@ManyToMany(mappedBy = "partisipants", fetch = FetchType.EAGER)
 	private Set<MyEvent> events;
-
+	
+	//for JPA only
 	public User() {
 		events = new HashSet<MyEvent>();
 	}

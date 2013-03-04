@@ -8,6 +8,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 
+import foo.domain.Activity;
 import foo.domain.MyEvent;
 import foo.domain.User;
 
@@ -25,7 +26,7 @@ public class ContentPanel extends CustomComponent {
 		tabsheet.setSizeFull();
 		Table userTable = new Table("Users", users);
 		// event id always 6 (now) (event.getId() == 0)
-		users.addContainerFilter(Filters.eq("events.id", 6));
+		users.addContainerFilter(Filters.eq("events.id", 7));
 		users.applyFilters();
 		users.refresh();
 		userTable.setVisibleColumns(new String[] { "id", "name", "password" });
@@ -37,7 +38,8 @@ public class ContentPanel extends CustomComponent {
 		setCompositionRoot(tabsheet);
 		setSizeFull();
 	}
-
+	
+	//only for testing
 	private void addData() {
 		User matti = new User();
 		matti.setName("Ville");
@@ -49,9 +51,10 @@ public class ContentPanel extends CustomComponent {
 		users.addEntity(matti);
 		users.addEntity(pekka);
 
-		MyEvent event = new MyEvent("event");
+		MyEvent event = new MyEvent("event", pekka);
 		event.addPartisipant(pekka);
 		event.addPartisipant(matti);
+		event.addActivity(new Activity("Aktiviteetti", pekka));
 		events.addEntity(event);
 
 		events.commit();

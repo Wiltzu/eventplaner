@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class MyEvent {
@@ -24,17 +25,31 @@ public class MyEvent {
 	private Set<User> partisipants;
 	@OneToMany
 	private Set<Activity> activities;
+	@OneToOne
+	private User creator;
+	
 
+
+	//for JPA
 	public MyEvent() {
-		partisipants = new HashSet<User>();
+		initLists();
 	}
 
-	public MyEvent(String name) {
+	public MyEvent(String name, User creator) {
 		super();
 		this.name = name;
-		this.partisipants = new HashSet<User>();
+		this.creator = creator;
+		initLists();
+	}
+	
+	public Set<Activity> getActivities() {
+		return activities;
 	}
 
+	public User getCreator() {
+		return creator;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -62,11 +77,18 @@ public class MyEvent {
 	public void addPartisipant(User user) {
 		this.partisipants.add(user);
 	}
+	
+	public void addActivity(Activity activity) {
+		this.activities.add(activity);
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((activities == null) ? 0 : activities.hashCode());
+		result = prime * result + ((creator == null) ? 0 : creator.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result
@@ -83,6 +105,16 @@ public class MyEvent {
 		if (getClass() != obj.getClass())
 			return false;
 		MyEvent other = (MyEvent) obj;
+		if (activities == null) {
+			if (other.activities != null)
+				return false;
+		} else if (!activities.equals(other.activities))
+			return false;
+		if (creator == null) {
+			if (other.creator != null)
+				return false;
+		} else if (!creator.equals(other.creator))
+			return false;
 		if (id != other.id)
 			return false;
 		if (name == null) {
@@ -102,6 +134,11 @@ public class MyEvent {
 	public String toString() {
 		return "Event [id=" + id + ", name=" + name + ", partisipants="
 				+ partisipants + "]";
+	}
+	
+	private void initLists() {
+		partisipants = new HashSet<User>();
+		activities = new HashSet<Activity>();
 	}
 
 }
