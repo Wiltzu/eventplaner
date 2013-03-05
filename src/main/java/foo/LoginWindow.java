@@ -73,7 +73,11 @@ public class LoginWindow extends Window {
 			users.applyFilters();
 			if(users.size() != 0) {
 				User user = users.getItem(users.firstItemId()).getEntity();
-				Notification.show(user.toString());
+				//Notification.show(user.toString());
+				
+				if(password.getValue().equals(user.getPassword())) {
+					close();
+				}
 			}	
 		}
 		

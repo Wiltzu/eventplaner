@@ -11,20 +11,26 @@ import com.vaadin.ui.themes.Reindeer;
 public class SidePanel extends CustomComponent {
 	
 	private final UI parentUI;
+	private final Window loginWindow;
 
 	public SidePanel(UI parent) {
 		this.parentUI = parent;
 		final VerticalLayout vv = new VerticalLayout();
 		vv.setStyleName(Reindeer.LAYOUT_WHITE);
+		
+		loginWindow = new LoginWindow();
+		loginWindow.center();
 
 		Button login = new Button("Login");
 		login.addClickListener(new Button.ClickListener() {
-			
+			boolean isAdded = false;
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Window login = new LoginWindow();
-				login.center();
-				parentUI.addWindow(login);
+				if(isAdded) {
+					parentUI.removeWindow(loginWindow);
+				}
+				parentUI.addWindow(loginWindow);
+				isAdded = true;
 			}
 		});
 		Button register = new Button("Register");
