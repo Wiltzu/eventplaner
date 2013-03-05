@@ -17,20 +17,19 @@ import javax.persistence.OneToOne;
 @Entity
 public class MyEvent {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String name;
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "USER_EVENT", joinColumns = { @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") })
+	@JoinTable(name = "USER_EVENT", joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID") })
 	private Set<User> partisipants;
-	@OneToMany(fetch=FetchType.EAGER) //default = lazy
+	// default = lazy
+	@OneToMany(fetch = FetchType.EAGER)
 	private Set<Activity> activities;
 	@OneToOne
 	private User creator;
-	
 
-
-	//for JPA
+	// for JPA
 	public MyEvent() {
 		initLists();
 	}
@@ -41,7 +40,7 @@ public class MyEvent {
 		this.creator = creator;
 		initLists();
 	}
-	
+
 	public Set<Activity> getActivities() {
 		return activities;
 	}
@@ -49,7 +48,7 @@ public class MyEvent {
 	public User getCreator() {
 		return creator;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -77,7 +76,7 @@ public class MyEvent {
 	public void addPartisipant(User user) {
 		this.partisipants.add(user);
 	}
-	
+
 	public void addActivity(Activity activity) {
 		this.activities.add(activity);
 	}
@@ -143,7 +142,7 @@ public class MyEvent {
 		return "Event [id=" + id + ", name=" + name + ", partisipants="
 				+ partisipants + "]";
 	}
-	
+
 	private void initLists() {
 		partisipants = new HashSet<User>();
 		activities = new HashSet<Activity>();

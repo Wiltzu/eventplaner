@@ -3,6 +3,7 @@ package foo.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	//@Column(unique = true)
 	private String name;
 	private String password;
 	@ManyToMany(mappedBy = "partisipants", fetch = FetchType.EAGER)

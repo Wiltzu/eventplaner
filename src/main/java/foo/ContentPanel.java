@@ -27,10 +27,11 @@ public class ContentPanel extends CustomComponent {
 		TabSheet tabsheet = new TabSheet();
 		tabsheet.setSizeFull();
 		Table userTable = new Table("Users", users);
+		userTable.setSelectable(true);
 		// event id always 6 (now) (event.getId() == 0)
-		users.addContainerFilter(Filters.eq("events.id", 1));
-		users.applyFilters();
-		users.refresh();
+//		users.addContainerFilter(Filters.eq("events.id", 1));
+//		users.applyFilters();
+//		users.refresh();
 		userTable.setVisibleColumns(new String[] { "id", "name", "password" });
 		tabsheet.addTab(userTable, "My Events");
 		tabsheet.addTab(new Table("Events", events), "Friend's Events");
@@ -44,7 +45,7 @@ public class ContentPanel extends CustomComponent {
 	//only for testing
 	private void addData() {
 		User matti = new User();
-		matti.setName("Ville");
+		matti.setName("matti");
 		matti.setPassword("salainen");
 		users.addEntity(matti);
 		User pekka = new User();

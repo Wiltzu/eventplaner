@@ -41,6 +41,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 import foo.domain.MyEvent;
@@ -51,7 +52,7 @@ import foo.domain.User;
  */
 @SuppressWarnings("serial")
 @PreserveOnRefresh
-public class MyVaadinApplication extends UI {
+public class MyVaadinApplication extends UI{
 
 	public MyVaadinApplication() {
 
@@ -83,8 +84,7 @@ public class MyVaadinApplication extends UI {
 
 	private Panel initMiddlePanel() {
 		HorizontalLayout h = new HorizontalLayout();
-
-		SidePanel sidePanel = new SidePanel();
+		SidePanel sidePanel = new SidePanel(this);
 		h.addComponent(sidePanel);
 		h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
 
@@ -136,5 +136,4 @@ public class MyVaadinApplication extends UI {
 
 		return bottomBanner;
 	}
-
 }
