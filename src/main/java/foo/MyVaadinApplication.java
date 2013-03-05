@@ -17,123 +17,105 @@ package foo;
 
 import java.io.File;
 
-import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.addon.jpacontainer.JPAContainerFactory;
-import com.vaadin.addon.jpacontainer.filter.Filters;
 import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.data.Container.Filter;
-import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
-
-import foo.domain.MyEvent;
-import foo.domain.User;
 
 /**
  * The Application's "main" class Test comment! --Brigesh
  */
 @SuppressWarnings("serial")
 @PreserveOnRefresh
-public class MyVaadinApplication extends UI{
+public class MyVaadinApplication extends UI {
 
-	public MyVaadinApplication() {
+    public MyVaadinApplication() {
 
-	}
+    }
 
-	@Override
-	protected void init(VaadinRequest request) {
-		initLayout();
-	}
+    @Override
+    protected void init(VaadinRequest request) {
+        initLayout();
+    }
 
-	private void initLayout() {
-		VerticalLayout v = new VerticalLayout();
-		v.setStyleName(Reindeer.LAYOUT_BLUE);
-		v.setSpacing(false);
-		setContent(v);
+    private void initLayout() {
+        VerticalLayout v = new VerticalLayout();
+        v.setStyleName(Reindeer.LAYOUT_BLUE);
+        v.setSpacing(false);
+        setContent(v);
 
-		Panel topBanner = initTopBanner();
-		v.addComponent(topBanner);
-		v.setComponentAlignment(topBanner, Alignment.TOP_CENTER);
+        Panel topBanner = initTopBanner();
+        v.addComponent(topBanner);
+        v.setComponentAlignment(topBanner, Alignment.TOP_CENTER);
 
-		Panel middlePanel = initMiddlePanel();
-		v.addComponent(middlePanel);
-		v.setComponentAlignment(middlePanel, Alignment.MIDDLE_CENTER);
+        Panel middlePanel = initMiddlePanel();
+        v.addComponent(middlePanel);
+        v.setComponentAlignment(middlePanel, Alignment.MIDDLE_CENTER);
 
-		Panel bottomBanner = initBottomBanner();
-		v.addComponent(bottomBanner);
-		v.setComponentAlignment(bottomBanner, Alignment.BOTTOM_CENTER);
-	}
+        Panel bottomBanner = initBottomBanner();
+        v.addComponent(bottomBanner);
+        v.setComponentAlignment(bottomBanner, Alignment.BOTTOM_CENTER);
+    }
 
-	private Panel initMiddlePanel() {
-		HorizontalLayout h = new HorizontalLayout();
-		SidePanel sidePanel = new SidePanel(this);
-		h.addComponent(sidePanel);
-		h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
+    private Panel initMiddlePanel() {
+        HorizontalLayout h = new HorizontalLayout();
+        SidePanel sidePanel = new SidePanel(this);
+        h.addComponent(sidePanel);
+        h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
 
-		ContentPanel content = new ContentPanel();
-		h.addComponent(content);
-		h.setComponentAlignment(content, Alignment.TOP_CENTER);
+        ContentPanel content = new ContentPanel();
+        h.addComponent(content);
+        h.setComponentAlignment(content, Alignment.TOP_CENTER);
 
-		Panel middlePanel = new Panel();
-		middlePanel.setContent(h);
+        Panel middlePanel = new Panel();
+        middlePanel.setContent(h);
 
-		return middlePanel;
-	}
+        return middlePanel;
+    }
 
-	private Panel initTopBanner() {
-		Panel topBanner = new Panel();
-		topBanner.setWidth("100%");
+    private Panel initTopBanner() {
+        Panel topBanner = new Panel();
+        topBanner.setWidth("100%");
 
-		String basepath = VaadinService.getCurrent().getBaseDirectory()
-				.getAbsolutePath();
+        String basepath = VaadinService.getCurrent().getBaseDirectory()
+                .getAbsolutePath();
 
-		FileResource resource = new FileResource(new File(basepath
-				+ "/WEB-INF/images/topBannerPlaceholder.png"));
+        FileResource resource = new FileResource(new File(basepath
+                + "/WEB-INF/images/topBannerPlaceholder.png"));
 
-		Embedded image = new Embedded("TopBanner placeholder image", resource);
+        Embedded image = new Embedded("TopBanner placeholder image", resource);
 
-		VerticalLayout v = new VerticalLayout();
-		v.addComponent(image);
-		topBanner.setContent(v);
+        VerticalLayout v = new VerticalLayout();
+        v.addComponent(image);
+        topBanner.setContent(v);
 
-		return topBanner;
-	}
+        return topBanner;
+    }
 
-	private Panel initBottomBanner() {
-		Panel bottomBanner = new Panel();
-		bottomBanner.setWidth("100%");
+    private Panel initBottomBanner() {
+        Panel bottomBanner = new Panel();
+        bottomBanner.setWidth("100%");
 
-		String basepath = VaadinService.getCurrent().getBaseDirectory()
-				.getAbsolutePath();
+        String basepath = VaadinService.getCurrent().getBaseDirectory()
+                .getAbsolutePath();
 
-		FileResource resource = new FileResource(new File(basepath
-				+ "/WEB-INF/images/topBannerPlaceholder.png"));
+        FileResource resource = new FileResource(new File(basepath
+                + "/WEB-INF/images/topBannerPlaceholder.png"));
 
-		Embedded image = new Embedded("BottomBanner placeholder image",
-				resource);
+        Embedded image = new Embedded("BottomBanner placeholder image",
+                resource);
 
-		VerticalLayout v = new VerticalLayout();
-		v.addComponent(image);
-		bottomBanner.setContent(v);
+        VerticalLayout v = new VerticalLayout();
+        v.addComponent(image);
+        bottomBanner.setContent(v);
 
-		return bottomBanner;
-	}
+        return bottomBanner;
+    }
 }
