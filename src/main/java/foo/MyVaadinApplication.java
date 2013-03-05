@@ -70,7 +70,7 @@ public class MyVaadinApplication extends UI {
         h.addComponent(sidePanel);
         h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
 
-        ContentPanel content = new ContentPanel();
+        ContentPanel content = new ContentPanel(this);
         h.addComponent(content);
         h.setComponentAlignment(content, Alignment.TOP_CENTER);
 
