@@ -40,15 +40,15 @@ public class SidePanel extends CustomComponent {
 			}
 		}
 		});
-		Button register = new Button("Register");
-		Button createNewEvent = new Button("Create new event!");
+		Button btnRegister = new Button("Register");
+		Button btnCreateNewEvent = new Button("Create new event!");
 
-		vv.addComponent(register);
+		vv.addComponent(btnRegister);
 		vv.addComponent(btnLogin);
-		vv.addComponent(createNewEvent);
+		vv.addComponent(btnCreateNewEvent);
 
 		btnLogin.setWidth("130");
-		register.setWidth("130");
+		btnRegister.setWidth("130");
 
 		setCompositionRoot(vv);
 		setSizeFull();
