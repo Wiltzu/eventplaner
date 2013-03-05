@@ -2,7 +2,9 @@ package foo;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -17,28 +19,40 @@ public class ContentPanel extends CustomComponent {
     private JPAContainer<User> users;
     private JPAContainer<MyEvent> events;
     private JPAContainer<Activity> activitys;
+    
+    private Table eventTable, userTable;
+    private Button btnEdit;
 
     public ContentPanel() {
         users = JPAContainerFactory.make(User.class, "database");
         events = JPAContainerFactory.make(MyEvent.class, "database");
         activitys = JPAContainerFactory.make(Activity.class, "database");
         addData();
+        
+        HorizontalLayout eventLayout = new HorizontalLayout();
+        eventLayout.setSpacing(true);
 
         TabSheet tabsheet = new TabSheet();
         tabsheet.setSizeFull();
-        Table userTable = new Table("Users", users);
+        btnEdit = new Button("Edit");
+        
+        userTable = new Table("Users", users);
         userTable.setSelectable(true);
-
-        Table eventTable = new Table("All Events", events);
+        userTable.setVisibleColumns(new String[] { "id", "name", "password" });
+        eventTable = new Table("All Events", events);
         eventTable.setVisibleColumns(new String[] { "name", "creator" });
         eventTable.setSelectable(true);
-        tabsheet.addTab(eventTable, "All Events");
-
-        userTable.setVisibleColumns(new String[] { "id", "name", "password" });
+        
+        //kokeilu
+        eventLayout.addComponent(eventTable);
+        eventLayout.addComponent(btnEdit);
+        
+        tabsheet.addTab(eventLayout, "All Events");
         tabsheet.addTab(userTable, "My Events");
         tabsheet.addTab(new Table("Events", events), "Friend's Events");
         tabsheet.addTab(new Label("Contents of the third tab"),
                 "My Past events");
+        
 
         setCompositionRoot(tabsheet);
         setSizeFull();
