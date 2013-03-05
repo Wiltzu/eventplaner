@@ -22,8 +22,8 @@ public class LoginWindow extends Window {
 	private JPAContainer<User> users;
 	private Label lblUsername;
 	private Label lblPassword;
-	private TextField username;
-	private PasswordField password;
+	private TextField txtUsername;
+	private PasswordField txtPassword;
 	private Button btnLogin;
 	private Button btnRegister;
 	
@@ -54,9 +54,9 @@ public class LoginWindow extends Window {
 
 		VerticalLayout fieldLayout = new VerticalLayout();
 		fieldLayout.addComponent(lblUsername);
-		fieldLayout.addComponent(username);
+		fieldLayout.addComponent(txtUsername);
 		fieldLayout.addComponent(lblPassword);
-		fieldLayout.addComponent(password);
+		fieldLayout.addComponent(txtPassword);
 
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setSpacing(true);
@@ -73,9 +73,9 @@ public class LoginWindow extends Window {
 
 	private void initButtons() {
 		lblUsername = new Label("Username:");
-		username = new TextField();
+		txtUsername = new TextField();
 		lblPassword = new Label("Password:");
-		password = new PasswordField();
+		txtPassword = new PasswordField();
 		btnLogin = new Button("Login", new LoginClickListener());
 		btnRegister = new Button("Register");
 		btnRegister.addClickListener(new ClickListener() {
@@ -99,9 +99,9 @@ public class LoginWindow extends Window {
 		
 		VerticalLayout fieldLayout = new VerticalLayout();
 		fieldLayout.addComponent(lblUsername);
-		fieldLayout.addComponent(username);
+		fieldLayout.addComponent(txtUsername);
 		fieldLayout.addComponent(lblPassword);
-		fieldLayout.addComponent(password);
+		fieldLayout.addComponent(txtPassword);
 		fieldLayout.addComponent(lblPasswordRepeat);
 		fieldLayout.addComponent(passwordRepeat);
 		
@@ -123,13 +123,13 @@ public class LoginWindow extends Window {
 
 		@Override
 		public void buttonClick(ClickEvent event) {
-			users.addContainerFilter(new Like("name", username.getValue()));
+			users.addContainerFilter(new Like("name", txtUsername.getValue()));
 			users.applyFilters();
 			if (users.size() != 0) {
 				User user = users.getItem(users.firstItemId()).getEntity();
 				// Notification.show(user.toString());
 
-				if (password.getValue().equals(user.getPassword())) {
+				if (txtPassword.getValue().equals(user.getPassword())) {
 					getSession().setAttribute("user", user);
 					close();
 				}
@@ -143,6 +143,12 @@ public class LoginWindow extends Window {
 
 		@Override
 		public void buttonClick(ClickEvent event) {
+			String username = txtUsername.getValue();
+			String password = txtPassword.getValue();
+			User newUser = new User(username, password);
+			
+			users.addEntity(newUser);
+			users.commit();
 			setContent(initLoginLayout());
 		}
 		
