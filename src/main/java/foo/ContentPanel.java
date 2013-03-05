@@ -37,8 +37,6 @@ public class ContentPanel extends CustomComponent {
         activitys = JPAContainerFactory.make(Activity.class, "database");
         addData();
 
-        // Build the eventWindow here for later use @line 52-68
-
         HorizontalLayout eventLayout = new HorizontalLayout();
         eventLayout.setSpacing(true);
 
@@ -70,7 +68,7 @@ public class ContentPanel extends CustomComponent {
                 // need to have event selected from the event table
                 // add the window
                 if (selectedEvent != null) {
-                    eventWindow = new EventWindow(selectedEvent);
+                    eventWindow = new EventWindow(selectedEvent, activitys);
                     eventWindow.center();
                     parentUI.addWindow(eventWindow);
                     isAdded = true;
@@ -122,7 +120,7 @@ public class ContentPanel extends CustomComponent {
         users.addEntity(pekka);
 
         Activity activity = new Activity("Aktiviteetti", pekka);
-        activitys.addEntity(activity);
+        getActivitys().addEntity(activity);
 
         MyEvent event = new MyEvent("event", pekka);
         event.addPartisipant(pekka);
@@ -132,7 +130,11 @@ public class ContentPanel extends CustomComponent {
 
         events.commit();
         users.commit();
-        activitys.commit();
+        getActivitys().commit();
+    }
+
+    public JPAContainer<Activity> getActivitys() {
+        return activitys;
     }
 
 }

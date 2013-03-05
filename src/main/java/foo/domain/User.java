@@ -113,10 +113,10 @@ public class User {
         return true;
     }
 
+    // Just use the username, for now.
     @Override
     public String toString() {
-        return "User [id=" + id + ", name=" + name + ", password=" + password
-                + "]";
+        return getName();
     }
 
 }
