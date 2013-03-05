@@ -7,7 +7,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -17,7 +16,7 @@ import foo.domain.User;
 
 @SuppressWarnings("serial")
 public class LoginWindow extends Window {
-	
+
 	private JPAContainer<User> users;
 	private Label lblUsername;
 	private Label lblPassword;
@@ -29,7 +28,7 @@ public class LoginWindow extends Window {
 	public LoginWindow() {
 		super("Login");
 		initDBContainer();
-		
+
 		lblUsername = new Label("Username:");
 		username = new TextField();
 		lblPassword = new Label("Password:");
@@ -37,23 +36,23 @@ public class LoginWindow extends Window {
 		btnLogin = new Button("Login");
 		btnRegister = new Button("Register");
 		btnLogin.addClickListener(new LoginClickListener());
-		
+
 		VerticalLayout fieldLayout = new VerticalLayout();
 		fieldLayout.addComponent(lblUsername);
 		fieldLayout.addComponent(username);
 		fieldLayout.addComponent(lblPassword);
 		fieldLayout.addComponent(password);
-		
+
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setSpacing(true);
 		buttonLayout.addComponent(btnLogin);
 		buttonLayout.addComponent(btnRegister);
-		
+
 		VerticalLayout mainLayout = new VerticalLayout();
 		mainLayout.setSpacing(true);
 		mainLayout.addComponent(fieldLayout);
 		mainLayout.addComponent(buttonLayout);
-		
+
 		setHeight("170px");
 		setWidth("150px");
 		setContent(mainLayout);
@@ -61,9 +60,9 @@ public class LoginWindow extends Window {
 	}
 
 	private void initDBContainer() {
-		users = JPAContainerFactory.make(User.class, "database");	
+		users = JPAContainerFactory.make(User.class, "database");
 	}
-	
+
 	private class LoginClickListener implements Button.ClickListener {
 
 		@Override
@@ -71,15 +70,16 @@ public class LoginWindow extends Window {
 			users.removeAllContainerFilters();
 			users.addContainerFilter(new Like("name", username.getValue()));
 			users.applyFilters();
-			if(users.size() != 0) {
+			if (users.size() != 0) {
 				User user = users.getItem(users.firstItemId()).getEntity();
-				//Notification.show(user.toString());
-				
-				if(password.getValue().equals(user.getPassword())) {
+				// Notification.show(user.toString());
+
+				if (password.getValue().equals(user.getPassword())) {
+					getSession().setAttribute("user", user);
 					close();
 				}
-			}	
+			}
 		}
-		
+
 	}
 }
