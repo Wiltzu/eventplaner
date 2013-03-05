@@ -10,6 +10,7 @@ import com.vaadin.ui.Table;
 import foo.domain.Activity;
 import foo.domain.MyEvent;
 import foo.domain.User;
+import foo.security.Password;
 
 public class ContentPanel extends CustomComponent {
 
@@ -27,10 +28,7 @@ public class ContentPanel extends CustomComponent {
         tabsheet.setSizeFull();
         Table userTable = new Table("Users", users);
         userTable.setSelectable(true);
-        // event id always 6 (now) (event.getId() == 0)
-        // users.addContainerFilter(Filters.eq("events.id", 1));
-        // users.applyFilters();
-        // users.refresh();
+
         Table eventTable = new Table("All Events", events);
         eventTable.setVisibleColumns(new String[] { "name", "creator" });
         eventTable.setSelectable(true);
@@ -50,11 +48,21 @@ public class ContentPanel extends CustomComponent {
     private void addData() {
         User matti = new User();
         matti.setName("matti");
-        matti.setPassword("salainen");
+        try {
+			matti.setPassword(Password.getSaltedHash("salainen"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         users.addEntity(matti);
         User pekka = new User();
         pekka.setName("Pekka");
-        pekka.setPassword("crypt");
+        try {
+			pekka.setPassword(Password.getSaltedHash("crypt"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         users.addEntity(matti);
         users.addEntity(pekka);
 
