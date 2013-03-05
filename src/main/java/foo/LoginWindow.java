@@ -15,6 +15,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import foo.domain.User;
+import foo.security.Password;
 
 @SuppressWarnings("serial")
 public class LoginWindow extends Window {
@@ -26,18 +27,18 @@ public class LoginWindow extends Window {
 	private PasswordField txtPassword;
 	private Button btnLogin;
 	private Button btnRegister;
-	
+
 	private Label lblPasswordRepeat;
 	private PasswordField passwordRepeat;
 	private Button btnSignUp;
-	
+
 	private VerticalLayout loginLayout;
 	private VerticalLayout registerLayout;
 
 	public LoginWindow() {
 		super("Login");
 		initDBContainer();
-		
+
 		initButtons();
 
 		setHeight("200px");
@@ -45,8 +46,6 @@ public class LoginWindow extends Window {
 		setContent(initLoginLayout());
 		setResizable(false);
 	}
-	
-	
 
 	private VerticalLayout initLoginLayout() {
 		VerticalLayout mainLayout = new VerticalLayout();
@@ -64,10 +63,11 @@ public class LoginWindow extends Window {
 		buttonLayout.addComponent(btnRegister);
 
 		mainLayout.addComponent(fieldLayout);
-		//mainLayout.setComponentAlignment(fieldLayout, Alignment.TOP_CENTER);
+		// mainLayout.setComponentAlignment(fieldLayout, Alignment.TOP_CENTER);
 		mainLayout.addComponent(buttonLayout);
-		//mainLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
-		
+		// mainLayout.setComponentAlignment(buttonLayout,
+		// Alignment.MIDDLE_CENTER);
+
 		return mainLayout;
 	}
 
@@ -79,24 +79,24 @@ public class LoginWindow extends Window {
 		btnLogin = new Button("Login", new LoginClickListener());
 		btnRegister = new Button("Register");
 		btnRegister.addClickListener(new ClickListener() {
-			
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				setCaption("Register");
 				setContent(initRegisterLayout());
-				
+
 			}
 		});
 	}
-	
+
 	private VerticalLayout initRegisterLayout() {
 		VerticalLayout mainLayout = new VerticalLayout();
 		mainLayout.setSpacing(true);
-		
+
 		lblPasswordRepeat = new Label("Repeat Password");
 		passwordRepeat = new PasswordField();
 		btnSignUp = new Button("Sign Up", new SingUpClickListener());
-		
+
 		VerticalLayout fieldLayout = new VerticalLayout();
 		fieldLayout.addComponent(lblUsername);
 		fieldLayout.addComponent(txtUsername);
@@ -104,14 +104,14 @@ public class LoginWindow extends Window {
 		fieldLayout.addComponent(txtPassword);
 		fieldLayout.addComponent(lblPasswordRepeat);
 		fieldLayout.addComponent(passwordRepeat);
-		
+
 		HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setSpacing(true);
 		buttonLayout.addComponent(btnSignUp);
-		
+
 		mainLayout.addComponent(fieldLayout);
 		mainLayout.addComponent(buttonLayout);
-		
+
 		return mainLayout;
 	}
 
@@ -129,28 +129,39 @@ public class LoginWindow extends Window {
 				User user = users.getItem(users.firstItemId()).getEntity();
 				// Notification.show(user.toString());
 
-				if (txtPassword.getValue().equals(user.getPassword())) {
-					getSession().setAttribute("user", user);
-					close();
+				try {
+					if (Password.check(txtPassword.getValue(),
+							user.getPassword())) {
+						getSession().setAttribute("user", user);
+						close();
+					}
+				} catch (Exception e) {
+					System.err.println("Empty password!");
 				}
 			}
 			users.removeAllContainerFilters();
 		}
 
 	}
-	
+
 	private class SingUpClickListener implements Button.ClickListener {
 
 		@Override
 		public void buttonClick(ClickEvent event) {
 			String username = txtUsername.getValue();
 			String password = txtPassword.getValue();
-			User newUser = new User(username, password);
-			
+			User newUser = null;
+			try {
+				newUser = new User(username, Password.getSaltedHash(password));
+			} catch (Exception e) {
+				System.err.println("password is empty");
+				;
+			}
+
 			users.addEntity(newUser);
 			users.commit();
 			setContent(initLoginLayout());
 		}
-		
+
 	}
 }
