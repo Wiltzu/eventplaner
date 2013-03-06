@@ -20,9 +20,12 @@ public class Activity {
 	@OneToOne
 	private User creator;
 	@OneToMany
-	private Set<ActivityRating> ratings;
+	private Set<User> voters;
+	private int votes;
 	
-
+	public enum Thumb {
+		UP, DOWN;
+	}
 
 	// For JPA
 	public Activity() {
@@ -32,7 +35,7 @@ public class Activity {
 		super();
 		this.name = name;
 		this.creator = creator;
-		ratings = new HashSet<ActivityRating>(); 
+		voters = new HashSet<User>();
 	}
 
 	public int getId() {
@@ -59,16 +62,33 @@ public class Activity {
 		this.creator = creator;
 	}	
 	
-	public Set<ActivityRating> getRatings() {
-		return ratings;
+	public Set<User> getVoters() {
+		return voters;
 	}
 
-	public void setRatings(Set<ActivityRating> ratings) {
-		this.ratings = ratings;
+	public void setVoters(Set<User> voters) {
+		this.voters = voters;
+	}
+
+	public int getVotes() {
+		return votes;
+	}
+
+	public void setVotes(int votes) {
+		this.votes = votes;
 	}
 	
-	public void rate(int rating, User ratedBy) {
-		ratings.add(new ActivityRating(rating, ratedBy));
+	public boolean vote(Thumb vote, User user) {
+		if(!getVoters().contains(user)) {
+			if(vote == Thumb.UP) {
+				votes++;
+			}
+			else {
+				votes--;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
