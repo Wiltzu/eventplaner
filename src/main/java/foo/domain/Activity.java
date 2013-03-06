@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -22,6 +23,8 @@ public class Activity {
 	@OneToMany
 	private Set<User> voters;
 	private int votes;
+	@ManyToOne
+	private MyEvent event;
 	
 	public enum Thumb {
 		UP, DOWN;
@@ -78,6 +81,14 @@ public class Activity {
 		this.votes = votes;
 	}
 	
+	public MyEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(MyEvent event) {
+		this.event = event;
+	}
+
 	public boolean vote(Thumb vote, User user) {
 		if(!getVoters().contains(user)) {
 			if(vote == Thumb.UP) {

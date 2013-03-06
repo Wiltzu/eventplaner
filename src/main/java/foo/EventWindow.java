@@ -1,6 +1,7 @@
 package foo;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -54,10 +55,13 @@ public class EventWindow extends Window {
         Label lblUserList = new Label(userlist, ContentMode.PREFORMATTED);
         v.addComponent(lblUserList);
 
-        // table for showing the activities related to the event
+        // table for showing the activities related to the event 
+        activities.addContainerFilter(new Equal("event", myEvent));
+        activities.applyFilters();
         Table tblActivities = new Table("Activities", activities);
         tblActivities.setSelectable(true);
         tblActivities.setWidth("100%");
+       
 
         // shrunk table to contents
         tblActivities.setPageLength(0);

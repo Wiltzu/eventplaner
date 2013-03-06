@@ -123,6 +123,10 @@ public class CreateNewEventWindow extends Window {
 			if (!eventName.equals("") && !eventDescription.equals("")) {
 				MyEvent newEvent = new MyEvent(eventName, eventDescription,
 						creator);
+				Object id = events.addEntity(newEvent);
+				events.commit();
+				events.refresh();
+				newEvent = events.getItem(id).getEntity();
 				newEvent.setActivities(activities);
 				events.addEntity(newEvent);
 				events.commit();

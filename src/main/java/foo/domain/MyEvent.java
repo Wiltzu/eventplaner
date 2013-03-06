@@ -88,6 +88,7 @@ public class MyEvent {
 	}
 
 	public void addActivity(Activity activity) {
+		activity.setEvent(this);
 		this.activities.add(activity);
 	}
 

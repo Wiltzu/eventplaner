@@ -122,12 +122,12 @@ public class ContentPanel extends CustomComponent {
 		users.addEntity(matti);
 		users.addEntity(pekka);
 
-		Activity activity = new Activity("Aktiviteetti", pekka);
-		getActivitys().addEntity(activity);
 
 		MyEvent event = new MyEvent("event", "This is cool event", pekka);
 		event.addPartisipant(pekka);
 		event.addPartisipant(matti);
+		Activity activity = new Activity("Aktiviteetti", pekka);
+		getActivitys().addEntity(activity);
 		event.addActivity(activity);
 		events.addEntity(event);
 
