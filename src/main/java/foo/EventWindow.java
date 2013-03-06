@@ -25,6 +25,7 @@ public class EventWindow extends Window {
     private MyEvent myEvent;
     private JPAContainer<Activity> activities;
     private Table tblActivities;
+    private Label lblUserList;
 
     public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities) {
         super(myEvent.getName());
@@ -49,14 +50,7 @@ public class EventWindow extends Window {
                 + myEvent.getCreator().getName());
         v.addComponent(lblEventCreator);
 
-        // build userlist from the set and format the string
-        String userlist = "Current participants: ";
-        for (User s : myEvent.getPartisipants()) {
-            userlist += s.getName() + ", ";
-        }
-        // drop the last comma and whitespace
-        userlist = userlist.substring(0, userlist.length() - 2) + ".";
-        Label lblUserList = new Label(userlist, ContentMode.PREFORMATTED);
+        lblUserList = createUserListLabel();
         v.addComponent(lblUserList);
 
         // table for showing the activities related to the event
@@ -84,15 +78,75 @@ public class EventWindow extends Window {
         return p;
     }
 
+    public Label createUserListLabel() {
+        // build userlist from the set and format the string
+        String userlist = "Current participants: ";
+        for (User s : myEvent.getPartisipants()) {
+            userlist += s.getName() + ", ";
+        }
+        // drop the last comma and whitespace
+        userlist = userlist.substring(0, userlist.length() - 2) + ".";
+
+        Label lbl = new Label(userlist, ContentMode.PREFORMATTED);
+        return lbl;
+    }
+
+    public void updateUserListLabel() {
+        // build userlist from the set and format the string
+        String userlist = "Current participants: ";
+        for (User s : myEvent.getPartisipants()) {
+            userlist += s.getName() + ", ";
+        }
+        // drop the last comma and whitespace
+        userlist = userlist.substring(0, userlist.length() - 2) + ".";
+        lblUserList.setValue(userlist);
+    }
+
     // buttons for joining/leaving
     private Panel initEventButtonPanel() {
         Panel p = new Panel();
         HorizontalLayout h = new HorizontalLayout();
 
         Button btnJoinEvent = new Button("Join this event!");
+        btnJoinEvent.addClickListener(new ClickListener() {
+            User currentUser;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // get current user
+                try {
+                    currentUser = (User) getParent().getUI().getSession()
+                            .getAttribute("user");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (currentUser != null) {
+                    myEvent.addPartisipant(currentUser);
+                    updateUserListLabel();
+                }
+            }
+        });
         h.addComponent(btnJoinEvent);
 
         Button btnLeaveEvent = new Button("Leave this event");
+        btnLeaveEvent.addClickListener(new ClickListener() {
+            User currentUser;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // get current user
+                try {
+                    currentUser = (User) getParent().getUI().getSession()
+                            .getAttribute("user");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (currentUser != null) {
+                    myEvent.getPartisipants().remove(currentUser);
+                    updateUserListLabel();
+                }
+            }
+        });
         h.addComponent(btnLeaveEvent);
 
         p.setContent(h);
@@ -122,7 +176,12 @@ public class EventWindow extends Window {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (currentUser != null && selectedActivity != null) {
+                // check that user exists, activity is selected and user is part
+                // of the event
+                if (currentUser != null
+                        && selectedActivity != null
+                        && selectedActivity.getEvent().getPartisipants()
+                                .contains(currentUser)) {
                     selectedActivity.vote(Thumb.UP, currentUser);
                     // add user to list of people who have voted for this
                     // activity
@@ -149,7 +208,12 @@ public class EventWindow extends Window {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (currentUser != null && selectedActivity != null) {
+                // check that user exists, activity is selected and user is part
+                // of the event
+                if (currentUser != null
+                        && selectedActivity != null
+                        && selectedActivity.getEvent().getPartisipants()
+                                .contains(currentUser)) {
                     selectedActivity.vote(Thumb.DOWN, currentUser);
                     // add user to list of people who have voted for this
                     // activity
