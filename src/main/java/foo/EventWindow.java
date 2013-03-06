@@ -1,5 +1,6 @@
 package foo;
 
+import com.vaadin.addon.jpacontainer.EntityItem;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -26,11 +27,15 @@ public class EventWindow extends Window {
     private JPAContainer<Activity> activities;
     private Table tblActivities;
     private Label lblUserList;
+    private EntityItem<MyEvent> eventEntity;
 
-    public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities) {
+    public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities,
+            JPAContainer<MyEvent> events, EntityItem<MyEvent> eventEntity) {
         super(myEvent.getName());
         this.myEvent = myEvent;
         this.activities = activities;
+        this.events = events;
+        this.eventEntity = eventEntity;
         setHeight("500px");
         setWidth("300px");
         setResizable(true);
@@ -123,6 +128,7 @@ public class EventWindow extends Window {
                 if (currentUser != null) {
                     myEvent.addPartisipant(currentUser);
                     updateUserListLabel();
+                    eventEntity.commit();
                 }
             }
         });
@@ -144,6 +150,7 @@ public class EventWindow extends Window {
                 if (currentUser != null) {
                     myEvent.getPartisipants().remove(currentUser);
                     updateUserListLabel();
+                    eventEntity.commit();
                 }
             }
         });
@@ -186,6 +193,9 @@ public class EventWindow extends Window {
                     // add user to list of people who have voted for this
                     // activity
                     selectedActivity.getVoters().add(currentUser);
+                    activities.getItem(tblIndex).commit();
+                    events.refresh();
+                    activities.refresh();
                 }
             }
         });
@@ -218,6 +228,9 @@ public class EventWindow extends Window {
                     // add user to list of people who have voted for this
                     // activity
                     selectedActivity.getVoters().add(currentUser);
+                    activities.getItem(tblIndex).commit();
+                    events.refresh();
+                    activities.refresh();
                 }
             }
         });
