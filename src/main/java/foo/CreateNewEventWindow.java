@@ -86,7 +86,7 @@ public class CreateNewEventWindow extends Window {
 
 				@Override
 				public void buttonClick(ClickEvent event) {
-					if (creator != null) {
+					if (creator == null) {
 						creator = (User) getSession().getAttribute(
 								"user");
 					}

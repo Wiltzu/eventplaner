@@ -41,6 +41,7 @@ public class MyEvent {
 		this.description = description;
 		this.creator = creator;
 		initLists();
+		addPartisipant(creator);
 	}
 
 	public Set<Activity> getActivities() {
