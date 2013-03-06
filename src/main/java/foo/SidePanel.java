@@ -66,6 +66,6 @@ public class SidePanel extends CustomComponent {
 	}
 
 	private boolean isLoggedIn() {
-		return getSession().getAttribute("user") != null;
+		return getUI().getSession().getAttribute("user") != null;
 	}
 }

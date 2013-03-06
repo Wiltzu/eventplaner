@@ -3,6 +3,7 @@ package foo;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.util.filter.Like;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -74,9 +75,11 @@ public class LoginWindow extends Window {
 	private void initButtons() {
 		lblUsername = new Label("Username:");
 		txtUsername = new TextField();
+		txtUsername.setCursorPosition(0);
 		lblPassword = new Label("Password:");
 		txtPassword = new PasswordField();
 		btnLogin = new Button("Login", new LoginClickListener());
+		btnLogin.setClickShortcut(KeyCode.ENTER);
 		btnRegister = new Button("Register");
 		btnRegister.addClickListener(new ClickListener() {
 
@@ -127,7 +130,6 @@ public class LoginWindow extends Window {
 			users.applyFilters();
 			if (users.size() != 0) {
 				User user = users.getItem(users.firstItemId()).getEntity();
-				// Notification.show(user.toString());
 
 				try {
 					if (Password.check(txtPassword.getValue(),

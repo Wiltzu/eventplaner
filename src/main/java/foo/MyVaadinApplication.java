@@ -37,7 +37,7 @@ import com.vaadin.ui.themes.Reindeer;
 public class MyVaadinApplication extends UI {
 
     public MyVaadinApplication() {
-
+    	
     }
 
     @Override
