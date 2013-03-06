@@ -127,7 +127,7 @@ public class CreateNewEventWindow extends Window {
 				events.commit();
 				events.refresh();
 				newEvent = events.getItem(id).getEntity();
-				newEvent.setActivities(activities);
+				newEvent.addSetOfActivities(activities);
 				events.addEntity(newEvent);
 				events.commit();
 				close(); // closes window

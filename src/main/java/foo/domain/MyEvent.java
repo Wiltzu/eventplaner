@@ -92,6 +92,11 @@ public class MyEvent {
 		activity.setEvent(this);
 		this.activities.add(activity);
 	}
+	public void addSetOfActivities(Set<Activity> activities) {
+		for(Activity activity : activities) {
+			addActivity(activity);
+		}
+	}
 
 	public void setActivities(Set<Activity> activities) {
 		this.activities = activities;
