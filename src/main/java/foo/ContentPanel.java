@@ -22,9 +22,9 @@ public class ContentPanel extends CustomComponent {
 
 	private JPAContainer<User> users;
 	private JPAContainer<MyEvent> events;
-	private JPAContainer<Activity> activitys;
+	private JPAContainer<Activity> activities;
 
-	private Table eventTable, userTable;
+	private Table eventTable, userTable, friendsTable;
 	private Button btnEdit;
 
 	private final UI parentUI;
@@ -34,7 +34,7 @@ public class ContentPanel extends CustomComponent {
 		this.parentUI = parent;
 		users = JPAContainerFactory.make(User.class, "database");
 		events = JPAContainerFactory.make(MyEvent.class, "database");
-		activitys = JPAContainerFactory.make(Activity.class, "database");
+		activities = JPAContainerFactory.make(Activity.class, "database");
 		addData();
 
 		HorizontalLayout eventLayout = new HorizontalLayout();
@@ -68,7 +68,7 @@ public class ContentPanel extends CustomComponent {
 				// need to have event selected from the event table
 				// add the window
 				if (selectedEvent != null) {
-					eventWindow = new EventWindow(selectedEvent, activitys);
+					eventWindow = new EventWindow(selectedEvent, activities);
 					eventWindow.center();
 					parentUI.addWindow(eventWindow);
 					isAdded = true;
@@ -79,9 +79,12 @@ public class ContentPanel extends CustomComponent {
 		userTable = new Table("Users", users);
 		userTable.setSelectable(true);
 		userTable.setVisibleColumns(new String[] { "id", "name", "password" });
+		
 		eventTable = new Table("All Events", events);
 		eventTable.setVisibleColumns(new String[] { "name", "creator" });
 		eventTable.setSelectable(true);
+		
+		friendsTable = new Table("Events", events);
 
 		// kokeilu
 		eventLayout.addComponent(eventTable);
@@ -89,7 +92,7 @@ public class ContentPanel extends CustomComponent {
 
 		tabsheet.addTab(eventLayout, "All Events");
 		tabsheet.addTab(userTable, "My Events");
-		tabsheet.addTab(new Table("Events", events), "Friend's Events");
+		tabsheet.addTab(friendsTable, "Friend's Events");
 		tabsheet.addTab(new Label("Contents of the third tab"),
 				"My Past events");
 
@@ -134,7 +137,16 @@ public class ContentPanel extends CustomComponent {
 	}
 
 	public JPAContainer<Activity> getActivitys() {
-		return activitys;
+		return activities;
+	}
+	
+	public void updateTables() {
+		events.refresh();
+		users.refresh();
+		activities.refresh();
+		userTable.setContainerDataSource(userTable.getContainerDataSource());
+		eventTable.setContainerDataSource(eventTable.getContainerDataSource());
+		eventTable.setContainerDataSource(friendsTable.getContainerDataSource());
 	}
 
 }

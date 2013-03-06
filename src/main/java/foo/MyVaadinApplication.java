@@ -35,6 +35,8 @@ import com.vaadin.ui.themes.Reindeer;
 @SuppressWarnings("serial")
 @PreserveOnRefresh
 public class MyVaadinApplication extends UI {
+	
+	private ContentPanel contentPanel;
 
     public MyVaadinApplication() {
     	
@@ -70,9 +72,9 @@ public class MyVaadinApplication extends UI {
         h.addComponent(sidePanel);
         h.setComponentAlignment(sidePanel, Alignment.MIDDLE_LEFT);
 
-        ContentPanel content = new ContentPanel(this);
-        h.addComponent(content);
-        h.setComponentAlignment(content, Alignment.TOP_CENTER);
+        contentPanel = new ContentPanel(this);
+        h.addComponent(contentPanel);
+        h.setComponentAlignment(contentPanel, Alignment.TOP_CENTER);
 
         Panel middlePanel = new Panel();
         middlePanel.setContent(h);
@@ -117,5 +119,9 @@ public class MyVaadinApplication extends UI {
         bottomBanner.setContent(v);
 
         return bottomBanner;
+    }
+    
+    public void updateTables() {
+    	contentPanel.updateTables();
     }
 }

@@ -42,6 +42,13 @@ public class SidePanel extends CustomComponent {
 			}
 
 		});
+		Button btnRefreshData = new Button("Refresh", new Button.ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				((MyVaadinApplication) parentUI).updateTables();	
+			}
+		});
 		Button btnCreateNewEvent = new Button("Create new event!",
 				new Button.ClickListener() {
 
@@ -57,6 +64,7 @@ public class SidePanel extends CustomComponent {
 				});
 
 		vv.addComponent(btnLogin);
+		vv.addComponent(btnRefreshData);
 		vv.addComponent(btnCreateNewEvent);
 
 		btnLogin.setWidth("130");
