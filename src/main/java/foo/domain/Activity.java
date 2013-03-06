@@ -1,9 +1,13 @@
 package foo.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -15,7 +19,11 @@ public class Activity {
 	private String name;
 	@OneToOne
 	private User creator;
+	@OneToMany
+	private Set<ActivityRating> ratings;
 	
+
+
 	// For JPA
 	public Activity() {
 	}
@@ -24,6 +32,7 @@ public class Activity {
 		super();
 		this.name = name;
 		this.creator = creator;
+		ratings = new HashSet<ActivityRating>(); 
 	}
 
 	public int getId() {
@@ -48,6 +57,18 @@ public class Activity {
 
 	public void setCreator(User creator) {
 		this.creator = creator;
+	}	
+	
+	public Set<ActivityRating> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(Set<ActivityRating> ratings) {
+		this.ratings = ratings;
+	}
+	
+	public void rate(int rating, User ratedBy) {
+		ratings.add(new ActivityRating(rating, ratedBy));
 	}
 
 	@Override

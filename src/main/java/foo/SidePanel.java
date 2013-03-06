@@ -19,38 +19,53 @@ public class SidePanel extends CustomComponent {
 		this.parentUI = parent;
 		final VerticalLayout vv = new VerticalLayout();
 		vv.setStyleName(Reindeer.LAYOUT_WHITE);
-		
+
 		loginWindow = new LoginWindow();
 		loginWindow.center();
 
 		Button btnLogin = new Button("Login");
 		btnLogin.addClickListener(new Button.ClickListener() {
 			boolean isAdded = false;
+
 			@Override
 			public void buttonClick(ClickEvent event) {
-			if(getSession().getAttribute("user") == null) {
-				if(isAdded) {
-					parentUI.removeWindow(loginWindow);
+				if (!isLoggedIn()) {
+					if (isAdded) {
+						parentUI.removeWindow(loginWindow);
+					}
+					parentUI.addWindow(loginWindow);
+					isAdded = true;
+				} else {
+					Notification.show(getSession().getAttribute("user")
+							.toString());
 				}
-				parentUI.addWindow(loginWindow);
-				isAdded = true;
 			}
-			else {
-				Notification.show(getSession().getAttribute("user").toString());
-			}
-		}
-		});
-		Button btnRegister = new Button("Register");
-		Button btnCreateNewEvent = new Button("Create new event!");
 
-		vv.addComponent(btnRegister);
+		});
+		Button btnCreateNewEvent = new Button("Create new event!",
+				new Button.ClickListener() {
+
+					@Override
+					public void buttonClick(ClickEvent event) {
+						if(isLoggedIn()) {
+							parentUI.addWindow(new CreateNewEventWindow());
+						}
+						else {
+							Notification.show("Login first to create your events!");
+						}
+					}
+				});
+
 		vv.addComponent(btnLogin);
 		vv.addComponent(btnCreateNewEvent);
 
 		btnLogin.setWidth("130");
-		btnRegister.setWidth("130");
 
 		setCompositionRoot(vv);
 		setSizeFull();
+	}
+
+	private boolean isLoggedIn() {
+		return getSession().getAttribute("user") != null;
 	}
 }

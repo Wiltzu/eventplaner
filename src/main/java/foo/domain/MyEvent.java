@@ -20,6 +20,7 @@ public class MyEvent {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String name;
+	private String description;
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "USER_EVENT", joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID") })
 	private Set<User> partisipants;
@@ -34,9 +35,10 @@ public class MyEvent {
 		initLists();
 	}
 
-	public MyEvent(String name, User creator) {
+	public MyEvent(String name, String description, User creator) {
 		super();
 		this.name = name;
+		this.description = description;
 		this.creator = creator;
 		initLists();
 	}
@@ -65,6 +67,14 @@ public class MyEvent {
 		this.name = name;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public Set<User> getPartisipants() {
 		return partisipants;
 	}
@@ -88,7 +98,7 @@ public class MyEvent {
 	public void setCreator(User creator) {
 		this.creator = creator;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
