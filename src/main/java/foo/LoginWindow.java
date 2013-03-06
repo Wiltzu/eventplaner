@@ -4,7 +4,6 @@ import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.util.filter.Like;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -12,6 +11,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -35,9 +35,12 @@ public class LoginWindow extends Window {
 
 	private VerticalLayout loginLayout;
 	private VerticalLayout registerLayout;
+	
+	private UI parentUI;
 
-	public LoginWindow() {
+	public LoginWindow(UI parentUI) {
 		super("Login");
+		this.parentUI = parentUI;
 		initDBContainer();
 
 		initButtons();
@@ -117,6 +120,10 @@ public class LoginWindow extends Window {
 
 		return mainLayout;
 	}
+	
+	private void setUserToSession(User user) {
+		parentUI.getSession().setAttribute("user", user);
+	}
 
 	private void initDBContainer() {
 		users = JPAContainerFactory.make(User.class, "database");
@@ -134,7 +141,7 @@ public class LoginWindow extends Window {
 				try {
 					if (Password.check(txtPassword.getValue(),
 							user.getPassword())) {
-						getSession().setAttribute("user", user);
+						setUserToSession(user);
 						close();
 					}
 				} catch (Exception e) {

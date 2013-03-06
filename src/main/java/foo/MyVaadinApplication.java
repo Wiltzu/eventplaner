@@ -33,7 +33,7 @@ import com.vaadin.ui.themes.Reindeer;
  * The Application's "main" class Test comment! --Brigesh
  */
 @SuppressWarnings("serial")
-@PreserveOnRefresh
+//@PreserveOnRefresh
 public class MyVaadinApplication extends UI {
 	
 	private ContentPanel contentPanel;
@@ -44,14 +44,20 @@ public class MyVaadinApplication extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        initLayout();
+        if(getSession().getAttribute("user") == null) {
+        	addWindow(new LoginWindow(this));
+        	setContent(initLayout());
+        }
+        else {
+        	setContent(initLayout());
+        }
     }
 
-    private void initLayout() {
+    private VerticalLayout initLayout() {
         VerticalLayout v = new VerticalLayout();
         v.setStyleName(Reindeer.LAYOUT_BLUE);
         v.setSpacing(false);
-        setContent(v);
+        
 
         Panel topBanner = initTopBanner();
         v.addComponent(topBanner);
@@ -64,6 +70,7 @@ public class MyVaadinApplication extends UI {
         Panel bottomBanner = initBottomBanner();
         v.addComponent(bottomBanner);
         v.setComponentAlignment(bottomBanner, Alignment.BOTTOM_CENTER);
+        return v;
     }
 
     private Panel initMiddlePanel() {

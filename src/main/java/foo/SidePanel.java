@@ -20,7 +20,7 @@ public class SidePanel extends CustomComponent {
 		final VerticalLayout vv = new VerticalLayout();
 		vv.setStyleName(Reindeer.LAYOUT_WHITE);
 
-		loginWindow = new LoginWindow();
+		loginWindow = new LoginWindow(parentUI);
 		loginWindow.center();
 
 		Button btnLogin = new Button("Login");
