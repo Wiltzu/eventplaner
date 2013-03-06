@@ -63,6 +63,8 @@ public class EventWindow extends Window {
         activities.addContainerFilter(new Equal("event", myEvent));
         activities.applyFilters();
         tblActivities = new Table("Activities", activities);
+        tblActivities.setVisibleColumns(new String[] { "name", "votes",
+                "creator" });
         tblActivities.setSelectable(true);
         tblActivities.setWidth("100%");
 
