@@ -1,13 +1,16 @@
 package foo;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
@@ -22,125 +25,143 @@ import foo.domain.User;
 
 public class CreateNewEventWindow extends Window {
 
-	private JPAContainer<MyEvent> events;
-	private Set<Activity> activities;
-	private User creator;
+    private JPAContainer<MyEvent> events;
+    private Set<Activity> activities;
+    private User creator;
 
-	private Button btnCreateEvent, btnAddActivity;
-	private TextField txtEventName;
-	private TextArea txtEventDescription;
-	private VerticalLayout mainLayout;
-	private VerticalLayout activitiesLayout;
-	
-	private UI parentUI;
+    private Button btnCreateEvent, btnAddActivity;
+    private TextField txtEventName;
+    private TextArea txtEventDescription;
+    private VerticalLayout mainLayout;
+    private VerticalLayout activitiesLayout;
 
-	public CreateNewEventWindow(UI parentUI) {
-		events = JPAContainerFactory.make(MyEvent.class, "database");
-		activities = new HashSet<Activity>();
-		this.parentUI = parentUI;
-		initLayout();
+    private UI parentUI;
 
-		setCaption("New Event");
-		setHeight("500px");
-		setWidth("300px");
-		center();
-		setContent(mainLayout);
-	}
+    public CreateNewEventWindow(UI parentUI) {
+        events = JPAContainerFactory.make(MyEvent.class, "database");
+        activities = new HashSet<Activity>();
+        this.parentUI = parentUI;
+        initLayout();
 
-	private void initLayout() {
-		mainLayout = new VerticalLayout();
-		mainLayout.setSpacing(true);
+        setCaption("New Event");
+        setHeight("500px");
+        setWidth("300px");
+        center();
+        setContent(mainLayout);
+    }
 
-		VerticalLayout eventLayout = new VerticalLayout();
-		txtEventName = new TextField("EventName");
-		txtEventName.setCursorPosition(0);
-		txtEventName.setWidth("250px");
-		txtEventDescription = new TextArea("Description", "Event description");
-		txtEventDescription.setWidth("250px");
-		txtEventDescription.setHeight("150px");
-		eventLayout.addComponent(txtEventName);
-		eventLayout.addComponent(txtEventDescription);
+    private void initLayout() {
+        mainLayout = new VerticalLayout();
+        mainLayout.setSpacing(true);
 
-		activitiesLayout = new VerticalLayout();
-		activitiesLayout.setSpacing(true);
-		btnAddActivity = new Button("Add Activity",
-				new AddActivityClickListener());
-		activitiesLayout.addComponent(btnAddActivity);
+        VerticalLayout eventLayout = new VerticalLayout();
+        txtEventName = new TextField("EventName");
+        txtEventName.setCursorPosition(0);
+        txtEventName.setWidth("250px");
+        txtEventDescription = new TextArea("Description", "Event description");
+        txtEventDescription.setWidth("250px");
+        txtEventDescription.setHeight("150px");
+        eventLayout.addComponent(txtEventName);
+        eventLayout.addComponent(txtEventDescription);
 
-		VerticalLayout createBtnLayout = new VerticalLayout();
-		btnCreateEvent = new Button("Create", new CreateEventClickListener());
+        activitiesLayout = new VerticalLayout();
+        activitiesLayout.setSpacing(true);
+        btnAddActivity = new Button("Add Activity",
+                new AddActivityClickListener());
+        activitiesLayout.addComponent(btnAddActivity);
 
-		createBtnLayout.addComponent(btnCreateEvent);
+        VerticalLayout createBtnLayout = new VerticalLayout();
+        btnCreateEvent = new Button("Create Event!",
+                new CreateEventClickListener());
 
-		mainLayout.addComponent(eventLayout);
-		mainLayout.addComponent(activitiesLayout);
-		mainLayout.addComponent(createBtnLayout);
-	}
+        createBtnLayout.addComponent(btnCreateEvent);
 
-	private User getCurrentUser() {
-		return (User) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("user");
-	}
+        mainLayout.addComponent(eventLayout);
+        mainLayout.addComponent(activitiesLayout);
+        mainLayout.addComponent(createBtnLayout);
+    }
 
-	private class AddActivityClickListener implements Button.ClickListener {
+    private User getCurrentUser() {
+        return (User) VaadinService.getCurrentRequest().getWrappedSession()
+                .getAttribute("user");
+    }
 
-		@Override
-		public void buttonClick(ClickEvent event) {
+    private class AddActivityClickListener implements Button.ClickListener {
 
-			HorizontalLayout activityLayout = new HorizontalLayout();
-			activityLayout.setSpacing(true);
-			final TextField txtActivityName = new TextField();
-			final Button btnConfirm = new Button("Confirm");
-			btnConfirm.addClickListener(new Button.ClickListener() {
+        @Override
+        public void buttonClick(ClickEvent event) {
 
-				@Override
-				public void buttonClick(ClickEvent event) {
-					if (creator == null) {
-						creator = getCurrentUser();
-					}
+            VerticalLayout v = new VerticalLayout();
 
-					String activityName = txtActivityName.getValue();
-					if (activityName != "") {
-						activities.add(new Activity(activityName, creator));
-						txtActivityName.setEnabled(false);
-						btnConfirm.setEnabled(false);
-					} else {
-						Notification.show("Give name to your activity!");
-					}
-				}
-			});
+            final HorizontalLayout activityLayout = new HorizontalLayout();
 
-			activityLayout.addComponent(txtActivityName);
-			activityLayout.addComponent(btnConfirm);
+            activityLayout.setSpacing(true);
+            final TextField txtActivityName = new TextField();
+            final Button btnConfirm = new Button("Add activity!");
 
-			activitiesLayout.addComponent(activityLayout);
-		}
+            activityLayout.addComponent(txtActivityName);
+            activityLayout.addComponent(btnConfirm);
 
-	}
+            v.addComponent(activityLayout);
 
-	private class CreateEventClickListener implements Button.ClickListener {
+            btnConfirm.addClickListener(new Button.ClickListener() {
 
-		@Override
-		public void buttonClick(ClickEvent event) {
-			if (creator == null) {
-				creator = getCurrentUser();
-			}
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    if (creator == null) {
+                        creator = getCurrentUser();
+                    }
 
-			String eventName = txtEventName.getValue();
-			String eventDescription = txtEventDescription.getValue();
-			if (!eventName.equals("") && !eventDescription.equals("")) {
-				MyEvent newEvent = new MyEvent(eventName, eventDescription,
-						creator);
-				Object id = events.addEntity(newEvent);
-				events.commit();
-				events.refresh();
-				newEvent = events.getItem(id).getEntity();
-				newEvent.addSetOfActivities(activities);
-				events.addEntity(newEvent);
-				events.commit();
-				close(); // closes window
-				((MyVaadinApplication)parentUI).updateTables();
-			}
-		}
+                    String activityName = txtActivityName.getValue();
+                    if (activityName != "") {
+                        activities.add(new Activity(activityName, creator));
+                        txtActivityName.setEnabled(false);
+                        btnConfirm.setEnabled(false);
 
-	}
+                        String basepath = VaadinService.getCurrent()
+                                .getBaseDirectory().getAbsolutePath();
+
+                        FileResource resource = new FileResource(
+                                new File(basepath
+                                        + "/WEB-INF/images/smallgreenokay.png"));
+
+                        Embedded image = new Embedded("", resource);
+                        activityLayout.addComponent(image);
+                    } else {
+                        Notification.show("Give name to your activity!");
+                    }
+                }
+            });
+
+            activitiesLayout.addComponent(activityLayout);
+        }
+
+    }
+
+    private class CreateEventClickListener implements Button.ClickListener {
+
+        @Override
+        public void buttonClick(ClickEvent event) {
+            if (creator == null) {
+                creator = getCurrentUser();
+            }
+
+            String eventName = txtEventName.getValue();
+            String eventDescription = txtEventDescription.getValue();
+            if (!eventName.equals("") && !eventDescription.equals("")) {
+                MyEvent newEvent = new MyEvent(eventName, eventDescription,
+                        creator);
+                Object id = events.addEntity(newEvent);
+                events.commit();
+                events.refresh();
+                newEvent = events.getItem(id).getEntity();
+                newEvent.addSetOfActivities(activities);
+                events.addEntity(newEvent);
+                events.commit();
+                close(); // closes window
+                ((MyVaadinApplication) parentUI).updateTables();
+            }
+        }
+
+    }
 }

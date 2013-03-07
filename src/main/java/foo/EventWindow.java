@@ -88,6 +88,7 @@ public class EventWindow extends Window {
         tblActivities = new Table("Activities", activities);
         updateTables();
         tblActivities.setSelectable(true);
+        tblActivities.setImmediate(true);
         tblActivities.setWidth("100%");
 
         // shrunk table to contents
@@ -321,8 +322,10 @@ public class EventWindow extends Window {
                             String basepath = VaadinService.getCurrent()
                                     .getBaseDirectory().getAbsolutePath();
 
-                            FileResource resource = new FileResource(new File(
-                                    basepath + "/WEB-INF/images/greenokay.png"));
+                            FileResource resource = new FileResource(
+                                    new File(
+                                            basepath
+                                                    + "/WEB-INF/images/smallgreenokay.png"));
 
                             Embedded image = new Embedded("", resource);
 
