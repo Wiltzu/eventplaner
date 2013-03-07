@@ -32,6 +32,12 @@ public class ContentPanel extends CustomComponent {
     private Window eventWindow;
     private User currentUser;
 
+    /**
+     * Constructor for Content panel
+     * 
+     * @param parent
+     *            the UI parent
+     */
     public ContentPanel(UI parent) {
         this.parentUI = parent;
         users = JPAContainerFactory.make(User.class, "database");
@@ -55,6 +61,11 @@ public class ContentPanel extends CustomComponent {
         setSizeFull();
     }
 
+    /**
+     * Initializes the allEventsLayout
+     * 
+     * @return initialized allEventsLayout
+     */
     private HorizontalLayout initAllEventsLayout() {
         HorizontalLayout eventLayout = null;
 
@@ -78,6 +89,11 @@ public class ContentPanel extends CustomComponent {
         return eventLayout;
     }
 
+    /**
+     * Initializes the myEventsTable
+     * 
+     * @return initialized myEventsTable
+     */
     private HorizontalLayout initMyEventsTable() {
         HorizontalLayout myEventLayout = null;
 
@@ -106,15 +122,28 @@ public class ContentPanel extends CustomComponent {
         return myEventLayout;
     }
 
+    /**
+     * Gets the current user
+     * 
+     * @return the current user logged in
+     */
     private Object getCurrentUser() {
         return VaadinService.getCurrentRequest().getWrappedSession()
                 .getAttribute("user");
     }
 
+    /**
+     * Gets the JPAContainer holding Activities
+     * 
+     * @return JPAContainer holding Activities
+     */
     public JPAContainer<Activity> getActivitys() {
         return activities;
     }
 
+    /**
+     * Updates all of the tables
+     */
     public void updateTables() {
         myEvents.refresh();
         allEvents.refresh();
@@ -129,6 +158,13 @@ public class ContentPanel extends CustomComponent {
         initAllEventsLayout();
     }
 
+    /**
+     * @author Ville Ahti
+     * @author Antti Laine
+     * 
+     *         Class that implements Button.ClickListener for listening to click
+     *         events for the view event details button
+     */
     private class ViewEventDetailsClickListener implements Button.ClickListener {
         boolean isAdded = false;
         MyEvent selectedEvent;

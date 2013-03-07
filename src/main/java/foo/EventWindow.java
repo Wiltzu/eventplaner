@@ -41,6 +41,16 @@ public class EventWindow extends Window {
     private Button btnDownVote;
     private Button addActivity;
 
+    /**
+     * Constructor for EventWindow
+     * 
+     * @param myEvent
+     *            The event shown in the window
+     * @param activities
+     *            JPAContainer of Activities
+     * @param events
+     *            JPAContainer of MyEvents
+     */
     public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities,
             JPAContainer<MyEvent> events) {
         super("Event: " + myEvent.getName());
@@ -55,7 +65,10 @@ public class EventWindow extends Window {
     }
 
     /**
-     * Build the window contents here
+     * Initializes the main panel for this window containing all the other
+     * panels
+     * 
+     * @return initialized panel that contains all contents
      */
     private Panel initContents() {
         Panel p = new Panel();
@@ -154,6 +167,12 @@ public class EventWindow extends Window {
         return p;
     }
 
+    /**
+     * Sets the correct state for the buttons on the window
+     * 
+     * @param currentUser
+     *            check if currentUser is part of the currently shown event
+     */
     private void refreshButtonState(User currentUser) {
         if (myEvent.getPartisipants().contains(currentUser)) {
             btnJoinEvent.setEnabled(false);
@@ -170,6 +189,11 @@ public class EventWindow extends Window {
         }
     }
 
+    /**
+     * Creates the string for the userListLabel
+     * 
+     * @return string containing formatted user list
+     */
     public Label createUserListLabel() {
         // build userlist from the set and format the string
         String userlist = "Current participants: ";
@@ -183,6 +207,9 @@ public class EventWindow extends Window {
         return lbl;
     }
 
+    /**
+     * Updates the userListLabel with the users that are currently in the event
+     */
     public void updateUserListLabel() {
         // build userlist from the set and format the string
         String userlist = "Current participants: ";
@@ -194,6 +221,9 @@ public class EventWindow extends Window {
         lblUserList.setValue(userlist);
     }
 
+    /**
+     * Updates and refreshes all of the tables
+     */
     private void updateTables() {
         events.refresh();
         activities.refresh();
@@ -206,7 +236,11 @@ public class EventWindow extends Window {
                 "creator" });
     }
 
-    // buttons for joining/leaving
+    /**
+     * Initiates the EventButtonPanel
+     * 
+     * @return initialized eventButtonPanel
+     */
     private Panel initEventButtonPanel() {
         Panel p = new Panel();
         HorizontalLayout h = new HorizontalLayout();
@@ -263,7 +297,11 @@ public class EventWindow extends Window {
         return p;
     }
 
-    // up/down vote buttons for selected activity
+    /**
+     * Initializes activityButtonPanel
+     * 
+     * @return initialized activityButtonpanel
+     */
     private Panel initActivityButtonPanel() {
         Panel p = new Panel();
         HorizontalLayout h = new HorizontalLayout();
@@ -341,6 +379,11 @@ public class EventWindow extends Window {
         return p;
     }
 
+    /**
+     * Initializes addActivityPanel
+     * 
+     * @return initialized addActivityPanel
+     */
     private Panel initAddActivityPanel() {
         Panel p = new Panel();
         final VerticalLayout v = new VerticalLayout();
@@ -408,6 +451,11 @@ public class EventWindow extends Window {
         return p;
     }
 
+    /**
+     * Gets the current user logged in
+     * 
+     * @return the current user
+     */
     private Object getCurrentUser() {
         return VaadinService.getCurrentRequest().getWrappedSession()
                 .getAttribute("user");

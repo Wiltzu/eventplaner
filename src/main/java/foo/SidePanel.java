@@ -13,65 +13,82 @@ import com.vaadin.ui.themes.Reindeer;
 @SuppressWarnings("serial")
 public class SidePanel extends CustomComponent {
 
-	private final UI parentUI;
-	private final Window loginWindow;
+    private final UI parentUI;
+    private final Window loginWindow;
 
-	public SidePanel(UI parent) {
-		this.parentUI = parent;
-		final VerticalLayout vv = new VerticalLayout();
-		vv.setStyleName(Reindeer.LAYOUT_WHITE);
+    /**
+     * Constructor that initializes the sidePanel and all the needed contents
+     * 
+     * @param parent
+     *            the parent UI
+     */
+    public SidePanel(UI parent) {
+        this.parentUI = parent;
+        final VerticalLayout vv = new VerticalLayout();
+        vv.setStyleName(Reindeer.LAYOUT_WHITE);
 
-		loginWindow = new LoginWindow(parentUI);
+        loginWindow = new LoginWindow(parentUI);
 
-		Button btnLogout = new Button("Logout");
-		btnLogout.addClickListener(new Button.ClickListener() {
+        Button btnLogout = new Button("Logout");
+        btnLogout.addClickListener(new Button.ClickListener() {
 
-			@Override
-			public void buttonClick(ClickEvent event) {
-					logout();
-					parentUI.addWindow(loginWindow);
-			}
+            @Override
+            public void buttonClick(ClickEvent event) {
+                logout();
+                parentUI.addWindow(loginWindow);
+            }
 
-		});
-		Button btnRefreshData = new Button("Refresh", new Button.ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				((MyVaadinApplication) parentUI).updateTables();	
-			}
-		});
-		Button btnCreateNewEvent = new Button("Create new event!",
-				new Button.ClickListener() {
+        });
+        Button btnRefreshData = new Button("Refresh",
+                new Button.ClickListener() {
 
-					@Override
-					public void buttonClick(ClickEvent event) {
-						if(isLoggedIn()) {
-							parentUI.addWindow(new CreateNewEventWindow(parentUI));
-						}
-						else {
-							Notification.show("Login first to create your events!");
-						}
-					}
-				});
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        ((MyVaadinApplication) parentUI).updateTables();
+                    }
+                });
+        Button btnCreateNewEvent = new Button("Create new event!",
+                new Button.ClickListener() {
 
-		vv.addComponent(btnLogout);
-		vv.addComponent(btnRefreshData);
-		vv.addComponent(btnCreateNewEvent);
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        if (isLoggedIn()) {
+                            parentUI.addWindow(new CreateNewEventWindow(
+                                    parentUI));
+                        } else {
+                            Notification
+                                    .show("Login first to create your events!");
+                        }
+                    }
+                });
 
-		btnLogout.setWidth("130");
-		btnRefreshData.setWidth("130");
+        vv.addComponent(btnLogout);
+        vv.addComponent(btnRefreshData);
+        vv.addComponent(btnCreateNewEvent);
 
-		setCompositionRoot(vv);
-		setSizeFull();
-	}
+        btnLogout.setWidth("130");
+        btnRefreshData.setWidth("130");
 
-	private boolean isLoggedIn() {
-		return VaadinService.getCurrentRequest().getWrappedSession().getAttribute("user") != null;
-	}
-	
+        setCompositionRoot(vv);
+        setSizeFull();
+    }
 
-	private void logout() {
-		VaadinService.getCurrentRequest().getWrappedSession().setAttribute("user", null);
-		
-	}
+    /**
+     * Check if the user attribute of the current session is set
+     * 
+     * @return wether or not user is logged in
+     */
+    private boolean isLoggedIn() {
+        return VaadinService.getCurrentRequest().getWrappedSession()
+                .getAttribute("user") != null;
+    }
+
+    /**
+     * Logs the current user out
+     */
+    private void logout() {
+        VaadinService.getCurrentRequest().getWrappedSession()
+                .setAttribute("user", null);
+
+    }
 }

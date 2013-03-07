@@ -37,6 +37,12 @@ public class CreateNewEventWindow extends Window {
 
     private UI parentUI;
 
+    /**
+     * Constructor for creating a new CreateNewEventWindow
+     * 
+     * @param parentUI
+     *            the parent UI object
+     */
     public CreateNewEventWindow(UI parentUI) {
         events = JPAContainerFactory.make(MyEvent.class, "database");
         activities = new HashSet<Activity>();
@@ -50,6 +56,9 @@ public class CreateNewEventWindow extends Window {
         setContent(mainLayout);
     }
 
+    /**
+     * Initializes the mainLayout
+     */
     private void initLayout() {
         mainLayout = new VerticalLayout();
         mainLayout.setSpacing(true);
@@ -81,11 +90,23 @@ public class CreateNewEventWindow extends Window {
         mainLayout.addComponent(createBtnLayout);
     }
 
+    /**
+     * Gets the current user
+     * 
+     * @return current user logged in
+     */
     private User getCurrentUser() {
         return (User) VaadinService.getCurrentRequest().getWrappedSession()
                 .getAttribute("user");
     }
 
+    /**
+     * @author Ville Ahti
+     * @author Antti Laine
+     * 
+     *         Class that implements Button.ClickListener for listening to click
+     *         events for add activity button
+     */
     private class AddActivityClickListener implements Button.ClickListener {
 
         @Override
@@ -138,6 +159,13 @@ public class CreateNewEventWindow extends Window {
 
     }
 
+    /**
+     * @author Ville Ahti
+     * @author Antti Laine
+     * 
+     *         Class that implements Button.ClickListener for listening to click
+     *         events for createEvent button
+     */
     private class CreateEventClickListener implements Button.ClickListener {
 
         @Override

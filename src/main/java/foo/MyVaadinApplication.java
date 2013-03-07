@@ -29,15 +29,15 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-/**
- * The Application's "main" class Test comment! --Brigesh
- */
 @SuppressWarnings("serial")
 @PreserveOnRefresh
 public class MyVaadinApplication extends UI {
 
     private ContentPanel contentPanel;
 
+    /**
+     * Constructor
+     */
     public MyVaadinApplication() {
 
     }
@@ -49,6 +49,11 @@ public class MyVaadinApplication extends UI {
         getPage().setTitle("EventPlanner");
     }
 
+    /**
+     * Initializes the main layout of the page
+     * 
+     * @return initialized main layout of the page
+     */
     private VerticalLayout initLayout() {
         VerticalLayout v = new VerticalLayout();
         v.setStyleName(Reindeer.LAYOUT_BLUE);
@@ -68,6 +73,11 @@ public class MyVaadinApplication extends UI {
         return v;
     }
 
+    /**
+     * Initializes the middle banner
+     * 
+     * @return initialized middle banner
+     */
     private Panel initMiddlePanel() {
         HorizontalLayout h = new HorizontalLayout();
         SidePanel sidePanel = new SidePanel(this);
@@ -84,6 +94,11 @@ public class MyVaadinApplication extends UI {
         return middlePanel;
     }
 
+    /**
+     * Initializes the top banner
+     * 
+     * @return initialized top banner
+     */
     private Panel initTopBanner() {
         Panel topBanner = new Panel();
         topBanner.setWidth("100%");
@@ -103,6 +118,11 @@ public class MyVaadinApplication extends UI {
         return topBanner;
     }
 
+    /**
+     * Initializes the bottom banner
+     * 
+     * @return initialized bottom banner
+     */
     private Panel initBottomBanner() {
         Panel bottomBanner = new Panel();
         bottomBanner.setWidth("100%");
@@ -122,6 +142,9 @@ public class MyVaadinApplication extends UI {
         return bottomBanner;
     }
 
+    /**
+     * Calls updateTables method from ContentPanel, updates all the tables
+     */
     public void updateTables() {
         contentPanel.updateTables();
     }
