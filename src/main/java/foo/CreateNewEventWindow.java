@@ -42,7 +42,7 @@ public class CreateNewEventWindow extends Window {
         activities = new HashSet<Activity>();
         this.parentUI = parentUI;
         initLayout();
-
+        setModal(true);
         setCaption("New Event");
         setHeight("500px");
         setWidth("300px");

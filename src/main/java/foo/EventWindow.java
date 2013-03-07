@@ -50,7 +50,7 @@ public class EventWindow extends Window {
         setHeight("500px");
         setWidth("300px");
         setResizable(true);
-
+        setModal(true);
         setContent(initContents());
     }
 
@@ -138,6 +138,16 @@ public class EventWindow extends Window {
         v.addComponent(initEventButtonPanel());
 
         v.addComponent(initAddActivityPanel());
+
+        Button btnClose = new Button("Close Window");
+        btnClose.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                close();
+            }
+        });
+        v.addComponent(btnClose);
 
         p.setContent(v);
         refreshButtonState((User) getCurrentUser());
