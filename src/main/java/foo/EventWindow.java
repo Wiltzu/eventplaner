@@ -9,8 +9,10 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -94,6 +96,8 @@ public class EventWindow extends Window {
 
         // buttons for joining/leaving
         v.addComponent(initEventButtonPanel());
+
+        v.addComponent(initAddActivityPanel());
 
         p.setContent(v);
 
@@ -266,6 +270,58 @@ public class EventWindow extends Window {
         h.addComponent(btnDownVote);
 
         p.setContent(h);
+        return p;
+    }
+
+    private Panel initAddActivityPanel() {
+        Panel p = new Panel();
+        final VerticalLayout v = new VerticalLayout();
+        Button addActivity = new Button("Add new activity");
+
+        addActivity.addClickListener(new ClickListener() {
+            User currentUser;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                final TextField txtActivityName = new TextField();
+                final Button btnConfirm = new Button("Add!");
+
+                HorizontalLayout h = new HorizontalLayout();
+                h.addComponent(txtActivityName);
+                h.addComponent(btnConfirm);
+                v.addComponent(h);
+
+                btnConfirm.addClickListener(new Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        if (currentUser == null) {
+                            currentUser = (User) getCurrentUser();
+                        }
+
+                        String activityName = txtActivityName.getValue();
+                        if (activityName != "") {
+                            Activity newActivity = new Activity(activityName,
+                                    currentUser);
+                            myEvent.addActivity(newActivity);
+                            activities.addEntity(newActivity);
+                            activities.commit();
+                            events.commit();
+                            updateTables();
+
+                            txtActivityName.setEnabled(false);
+                            btnConfirm.setEnabled(false);
+                        } else {
+                            Notification.show("Give name to your activity!");
+                        }
+                    }
+                });
+            }
+        });
+
+        v.addComponent(addActivity);
+
+        p.setContent(v);
         return p;
     }
 
