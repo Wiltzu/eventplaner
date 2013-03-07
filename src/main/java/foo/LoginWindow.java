@@ -4,6 +4,7 @@ import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.util.filter.Like;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -70,10 +71,7 @@ public class LoginWindow extends Window {
 		buttonLayout.addComponent(btnRegister);
 
 		mainLayout.addComponent(fieldLayout);
-		// mainLayout.setComponentAlignment(fieldLayout, Alignment.TOP_CENTER);
 		mainLayout.addComponent(buttonLayout);
-		// mainLayout.setComponentAlignment(buttonLayout,
-		// Alignment.MIDDLE_CENTER);
 
 		return mainLayout;
 	}
@@ -125,7 +123,7 @@ public class LoginWindow extends Window {
 	}
 	
 	private void setUserToSession(User user) {
-		parentUI.getSession().setAttribute("user", user);
+		VaadinService.getCurrentRequest().getWrappedSession().setAttribute("user", user);
 	}
 
 	private void initDBContainer() {
@@ -146,6 +144,8 @@ public class LoginWindow extends Window {
 							user.getPassword())) {
 						setUserToSession(user);
 						close();
+						// update tables
+						((MyVaadinApplication)parentUI).updateTables();
 					}
 				} catch (Exception e) {
 					System.err.println("Empty password!");

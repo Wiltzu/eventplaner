@@ -1,5 +1,6 @@
 package foo;
 
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -21,24 +22,14 @@ public class SidePanel extends CustomComponent {
 		vv.setStyleName(Reindeer.LAYOUT_WHITE);
 
 		loginWindow = new LoginWindow(parentUI);
-		loginWindow.center();
 
-		Button btnLogin = new Button("Login");
-		btnLogin.addClickListener(new Button.ClickListener() {
-			boolean isAdded = false;
+		Button btnLogout = new Button("Logout");
+		btnLogout.addClickListener(new Button.ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (!isLoggedIn()) {
-					if (isAdded) {
-						parentUI.removeWindow(loginWindow);
-					}
+					logout();
 					parentUI.addWindow(loginWindow);
-					isAdded = true;
-				} else {
-					Notification.show(getSession().getAttribute("user")
-							.toString());
-				}
 			}
 
 		});
@@ -55,7 +46,7 @@ public class SidePanel extends CustomComponent {
 					@Override
 					public void buttonClick(ClickEvent event) {
 						if(isLoggedIn()) {
-							parentUI.addWindow(new CreateNewEventWindow());
+							parentUI.addWindow(new CreateNewEventWindow(parentUI));
 						}
 						else {
 							Notification.show("Login first to create your events!");
@@ -63,17 +54,24 @@ public class SidePanel extends CustomComponent {
 					}
 				});
 
-		vv.addComponent(btnLogin);
+		vv.addComponent(btnLogout);
 		vv.addComponent(btnRefreshData);
 		vv.addComponent(btnCreateNewEvent);
 
-		btnLogin.setWidth("130");
+		btnLogout.setWidth("130");
+		btnRefreshData.setWidth("130");
 
 		setCompositionRoot(vv);
 		setSizeFull();
 	}
 
 	private boolean isLoggedIn() {
-		return getUI().getSession().getAttribute("user") != null;
+		return VaadinService.getCurrentRequest().getWrappedSession().getAttribute("user") != null;
+	}
+	
+
+	private void logout() {
+		VaadinService.getCurrentRequest().getWrappedSession().setAttribute("user", null);
+		
 	}
 }

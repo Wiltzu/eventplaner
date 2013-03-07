@@ -44,13 +44,8 @@ public class MyVaadinApplication extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        if(getSession().getAttribute("user") == null) {
         	addWindow(new LoginWindow(this));
         	setContent(initLayout());
-        }
-        else {
-        	setContent(initLayout());
-        }
     }
 
     private VerticalLayout initLayout() {

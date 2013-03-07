@@ -3,6 +3,7 @@ package foo;
 import com.vaadin.addon.jpacontainer.EntityItem;
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.util.filter.Compare.Equal;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -27,15 +28,13 @@ public class EventWindow extends Window {
 	private JPAContainer<Activity> activities;
 	private Table tblActivities;
 	private Label lblUserList;
-	private EntityItem<MyEvent> eventEntity;
 
 	public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities,
-			JPAContainer<MyEvent> events, EntityItem<MyEvent> eventEntity) {
+			JPAContainer<MyEvent> events) {
 		super(myEvent.getName());
 		this.myEvent = myEvent;
 		this.activities = activities;
 		this.events = events;
-		this.eventEntity = eventEntity;
 		setHeight("500px");
 		setWidth("300px");
 		setResizable(true);
@@ -132,8 +131,7 @@ public class EventWindow extends Window {
 			public void buttonClick(ClickEvent event) {
 				// get current user
 				try {
-					currentUser = (User) getParent().getUI().getSession()
-							.getAttribute("user");
+					currentUser = (User) getCurrentUser();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -156,8 +154,7 @@ public class EventWindow extends Window {
 			public void buttonClick(ClickEvent event) {
 				// get current user
 				try {
-					currentUser = (User) getParent().getUI().getSession()
-							.getAttribute("user");
+					currentUser = (User) getCurrentUser();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -193,8 +190,7 @@ public class EventWindow extends Window {
 					tblIndex = tblActivities.getValue();
 					selectedActivity = activities.getItem(tblIndex).getEntity();
 					// get current user
-					currentUser = (User) getParent().getUI().getSession()
-							.getAttribute("user");
+					currentUser = (User) getCurrentUser();
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -229,8 +225,7 @@ public class EventWindow extends Window {
 					tblIndex = tblActivities.getValue();
 					selectedActivity = activities.getItem(tblIndex).getEntity();
 					// get current user
-					currentUser = (User) getParent().getUI().getSession()
-							.getAttribute("user");
+					currentUser = (User) getCurrentUser();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -254,5 +249,10 @@ public class EventWindow extends Window {
 
 		p.setContent(h);
 		return p;
+	}
+
+	private Object getCurrentUser() {
+		return VaadinService.getCurrentRequest()
+				.getWrappedSession().getAttribute("user");
 	}
 }

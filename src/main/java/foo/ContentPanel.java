@@ -2,20 +2,26 @@ package foo;
 
 import java.util.Set;
 
-import com.vaadin.addon.jpacontainer.EntityItem;
+import org.apache.commons.logging.Log;
+
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.filter.Like;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import foo.domain.Activity;
@@ -26,11 +32,11 @@ import foo.security.Password;
 public class ContentPanel extends CustomComponent {
 
     private JPAContainer<User> users;
-    private JPAContainer<MyEvent> events;
+    private JPAContainer<MyEvent> myEvents, allEvents;
     private JPAContainer<Activity> activities;
 
-    private Table eventTable, myEventsTable, friendsTable;
-    private Button btnEdit;
+    private Table tblAllEvents, tblMyEvents, tblFriends;
+    private TabSheet tabsheet;
 
     private final UI parentUI;
     private Window eventWindow;
@@ -39,66 +45,25 @@ public class ContentPanel extends CustomComponent {
     public ContentPanel(UI parent) {
         this.parentUI = parent;
         users = JPAContainerFactory.make(User.class, "database");
-        events = JPAContainerFactory.make(MyEvent.class, "database");
+        myEvents = JPAContainerFactory.make(MyEvent.class, "database");
+        allEvents = JPAContainerFactory.make(MyEvent.class, "database");
+        
         activities = JPAContainerFactory.make(Activity.class, "database");
         addData();
 
-        HorizontalLayout eventLayout = new HorizontalLayout();
-        eventLayout.setSpacing(true);
-
-        TabSheet tabsheet = new TabSheet();
+        tabsheet = new TabSheet();
         tabsheet.setSizeFull();
 
-        btnEdit = new Button("View Details");
-        btnEdit.addClickListener(new ClickListener() {
-            boolean isAdded = false;
-            MyEvent selectedEvent;
-            EntityItem<MyEvent> eventEntity;
-            Object tblIndex;
+        HorizontalLayout myEventsLayout = initMyEventsTable();
+        HorizontalLayout allEventsLayout = initAllEventsLayout();
+        
+        tblFriends = new Table("Events", myEvents);
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                // handle nulls here later
-                try {
-                    tblIndex = eventTable.getValue();
-                    selectedEvent = events.getItem(tblIndex).getEntity();
-                    eventEntity = events.getItem(tblIndex);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        
 
-                // only one event window up at a time
-                if (isAdded) {
-                    parentUI.removeWindow(eventWindow);
-                    isAdded = false;
-                }
-
-                // need to have event selected from the event table
-                // add the window
-                if (selectedEvent != null) {
-                    eventWindow = new EventWindow(selectedEvent, activities,
-                            events, eventEntity);
-                    eventWindow.center();
-                    parentUI.addWindow(eventWindow);
-                    isAdded = true;
-                }
-            }
-        });
-        initMyEventsTable();
-
-        eventTable = new Table("All Events", events);
-        eventTable.setVisibleColumns(new String[] { "name", "creator" });
-        eventTable.setSelectable(true);
-
-        friendsTable = new Table("Events", events);
-
-        // kokeilu
-        eventLayout.addComponent(eventTable);
-        eventLayout.addComponent(btnEdit);
-
-        tabsheet.addTab(eventLayout, "All Events");
-        tabsheet.addTab(myEventsTable, "My Events");
-        tabsheet.addTab(friendsTable, "Friend's Events");
+        tabsheet.addTab(allEventsLayout, "All Events");
+        tabsheet.addTab(myEventsLayout, "My Events");
+        tabsheet.addTab(tblFriends, "Friend's Events");
         tabsheet.addTab(new Label("Contents of the third tab"),
                 "My Past events");
 
@@ -106,36 +71,56 @@ public class ContentPanel extends CustomComponent {
         setSizeFull();
     }
 
-    @SuppressWarnings("unchecked")
-    private void initMyEventsTable() {
-        Container ic = new IndexedContainer();
-        ic.addContainerProperty("Id", Integer.class, null);
-        ic.addContainerProperty("Name", String.class, null);
-        ic.addContainerProperty("Creator", User.class, null);
+	private HorizontalLayout initAllEventsLayout() {
+		HorizontalLayout eventLayout = null;
+		
+        if(tblAllEvents == null) {
+        	eventLayout = new HorizontalLayout();
+        	eventLayout.setId("All Events");
+            eventLayout.setSpacing(true);
+            
+            tblAllEvents = new Table(null, allEvents);
+            tblAllEvents.setSelectable(true);
+            Button btnEdit = new Button("View Details", new ViewEventDetailsClickListener());
+            
+            eventLayout.addComponent(tblAllEvents);
+            eventLayout.addComponent(btnEdit);
+        }
+        
+        tblAllEvents.setVisibleColumns(new String[] { "name", "description", "creator" });
+        
+        
+		return eventLayout;
+	}
 
-        if (parentUI.getSession().getAttribute("user") != null) {
-            currentUser = (User) parentUI.getSession().getAttribute("user");
-            Set<MyEvent> eventSet = currentUser.getEvents();
+    private HorizontalLayout initMyEventsTable() {
+    	HorizontalLayout myEventLayout = null;
 
-            for (MyEvent event : eventSet) {
-                ic.addItem(event.getId());
-                ic.getContainerProperty(event.getId(), "Id").setValue(
-                        event.getId());
-                ic.getContainerProperty(event.getId(), "Name").setValue(
-                        event.getName());
-                ic.getContainerProperty(event.getId(), "Creator").setValue(
-                        event.getCreator());
-            }
+        if (getCurrentUser() != null) {
+            currentUser = (User) getCurrentUser();
+            myEvents.addContainerFilter(new Like("partisipants.id", Integer.toString(currentUser.getId())));
         }
 
-        if (myEventsTable == null) {
-            myEventsTable = new Table("Users", ic);
-            myEventsTable.setSelectable(true);
+        if (tblMyEvents == null) {
+        	myEventLayout = new HorizontalLayout();
+        	myEventLayout.setId("My Events");
+        	myEventLayout.setSpacing(true);
+        	
+            tblMyEvents = new Table(null, myEvents);
+            tblMyEvents.setSelectable(true);
+            Button btnEdit = new Button("View Details", new ViewEventDetailsClickListener());
+            
+            myEventLayout.addComponent(tblMyEvents);
+            myEventLayout.addComponent(btnEdit);
 
         }
-        myEventsTable.setVisibleColumns(new String[] { "Name", "Creator" });
-
+        tblMyEvents.setVisibleColumns(new String[] { "name", "description", "creator" });
+        return myEventLayout;
     }
+
+	private Object getCurrentUser() {
+		return VaadinService.getCurrentRequest().getWrappedSession().getAttribute("user");
+	}
 
     // only for testing
     private void addData() {
@@ -165,9 +150,9 @@ public class ContentPanel extends CustomComponent {
         Activity activity = new Activity("Aktiviteetti", pekka);
         getActivitys().addEntity(activity);
         event.addActivity(activity);
-        events.addEntity(event);
+        myEvents.addEntity(event);
 
-        events.commit();
+        myEvents.commit();
         users.commit();
         getActivitys().commit();
     }
@@ -177,16 +162,57 @@ public class ContentPanel extends CustomComponent {
     }
 
     public void updateTables() {
-        events.refresh();
+        myEvents.refresh();
+        allEvents.refresh();
         users.refresh();
         activities.refresh();
-        initMyEventsTable();
-        myEventsTable.setContainerDataSource(myEventsTable
+        tblMyEvents.setContainerDataSource(tblMyEvents
                 .getContainerDataSource());
-        eventTable.setContainerDataSource(eventTable.getContainerDataSource());
-        eventTable
-                .setContainerDataSource(friendsTable.getContainerDataSource());
-
+        tblAllEvents.setContainerDataSource(tblAllEvents.getContainerDataSource());
+        tblFriends
+                .setContainerDataSource(tblFriends.getContainerDataSource());
+        initMyEventsTable();
+        initAllEventsLayout();
     }
+    
+    private class ViewEventDetailsClickListener implements Button.ClickListener {
+    	  boolean isAdded = false;
+          MyEvent selectedEvent;
+          Object tblIndex;
 
+          @Override
+          public void buttonClick(ClickEvent event) {
+        	  Component selectedTab = tabsheet.getSelectedTab();
+              try {
+              	if(selectedTab.getId().equals("All Events")) {
+              		tblIndex = tblAllEvents.getValue();
+              		selectedEvent = allEvents.getItem(tblIndex).getEntity();
+              	}
+              	// My Events
+              	else { 
+              		tblIndex = tblMyEvents.getValue();
+              		selectedEvent = myEvents.getItem(tblIndex).getEntity();
+              	}
+                  
+              } catch (NullPointerException e) {
+                  Notification.show("Select event to view details.");
+              }
+
+              // only one event window up at a time
+              if (isAdded) {
+                  parentUI.removeWindow(eventWindow);
+                  isAdded = false;
+              }
+
+              // need to have event selected from the event table
+              // add the window
+              if (selectedEvent != null) {
+                  eventWindow = new EventWindow(selectedEvent, activities,
+                          myEvents);
+                  eventWindow.center();
+                  parentUI.addWindow(eventWindow);
+                  isAdded = true;
+              }
+          }
+    }
 }

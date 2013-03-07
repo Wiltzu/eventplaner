@@ -5,12 +5,14 @@ import java.util.Set;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -29,11 +31,13 @@ public class CreateNewEventWindow extends Window {
 	private TextArea txtEventDescription;
 	private VerticalLayout mainLayout;
 	private VerticalLayout activitiesLayout;
+	
+	private UI parentUI;
 
-	public CreateNewEventWindow() {
+	public CreateNewEventWindow(UI parentUI) {
 		events = JPAContainerFactory.make(MyEvent.class, "database");
 		activities = new HashSet<Activity>();
-
+		this.parentUI = parentUI;
 		initLayout();
 
 		setCaption("New Event");
@@ -73,6 +77,10 @@ public class CreateNewEventWindow extends Window {
 		mainLayout.addComponent(createBtnLayout);
 	}
 
+	private User getCurrentUser() {
+		return (User) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("user");
+	}
+
 	private class AddActivityClickListener implements Button.ClickListener {
 
 		@Override
@@ -87,8 +95,7 @@ public class CreateNewEventWindow extends Window {
 				@Override
 				public void buttonClick(ClickEvent event) {
 					if (creator == null) {
-						creator = (User) getSession().getAttribute(
-								"user");
+						creator = getCurrentUser();
 					}
 
 					String activityName = txtActivityName.getValue();
@@ -115,7 +122,7 @@ public class CreateNewEventWindow extends Window {
 		@Override
 		public void buttonClick(ClickEvent event) {
 			if (creator == null) {
-				creator = (User) getSession().getAttribute("user");
+				creator = getCurrentUser();
 			}
 
 			String eventName = txtEventName.getValue();
@@ -131,6 +138,7 @@ public class CreateNewEventWindow extends Window {
 				events.addEntity(newEvent);
 				events.commit();
 				close(); // closes window
+				((MyVaadinApplication)parentUI).updateTables();
 			}
 		}
 
