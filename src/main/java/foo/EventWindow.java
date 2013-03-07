@@ -22,222 +22,237 @@ import foo.domain.User;
 @SuppressWarnings("serial")
 public class EventWindow extends Window {
 
-    private JPAContainer<MyEvent> events;
-    private MyEvent myEvent;
-    private JPAContainer<Activity> activities;
-    private Table tblActivities;
-    private Label lblUserList;
-    private EntityItem<MyEvent> eventEntity;
+	private JPAContainer<MyEvent> events;
+	private MyEvent myEvent;
+	private JPAContainer<Activity> activities;
+	private Table tblActivities;
+	private Label lblUserList;
+	private EntityItem<MyEvent> eventEntity;
 
-    public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities,
-            JPAContainer<MyEvent> events, EntityItem<MyEvent> eventEntity) {
-        super(myEvent.getName());
-        this.myEvent = myEvent;
-        this.activities = activities;
-        this.events = events;
-        this.eventEntity = eventEntity;
-        setHeight("500px");
-        setWidth("300px");
-        setResizable(true);
+	public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities,
+			JPAContainer<MyEvent> events, EntityItem<MyEvent> eventEntity) {
+		super(myEvent.getName());
+		this.myEvent = myEvent;
+		this.activities = activities;
+		this.events = events;
+		this.eventEntity = eventEntity;
+		setHeight("500px");
+		setWidth("300px");
+		setResizable(true);
 
-        setContent(initContents());
-    }
+		setContent(initContents());
+	}
 
-    /**
-     * Build the window contents here
-     */
-    private Panel initContents() {
-        Panel p = new Panel("Event Details");
-        VerticalLayout v = new VerticalLayout();
+	/**
+	 * Build the window contents here
+	 */
+	private Panel initContents() {
+		Panel p = new Panel("Event Details");
+		VerticalLayout v = new VerticalLayout();
 
-        // Add event info around here
-        Label lblEventCreator = new Label("Event created by: "
-                + myEvent.getCreator().getName());
-        v.addComponent(lblEventCreator);
+		// Add event info around here
+		Label lblEventCreator = new Label("Event created by: "
+				+ myEvent.getCreator().getName());
+		v.addComponent(lblEventCreator);
 
-        lblUserList = createUserListLabel();
-        v.addComponent(lblUserList);
+		lblUserList = createUserListLabel();
+		v.addComponent(lblUserList);
 
-        // table for showing the activities related to the event
-        activities.addContainerFilter(new Equal("event", myEvent));
-        activities.applyFilters();
-        tblActivities = new Table("Activities", activities);
-        tblActivities.setVisibleColumns(new String[] { "name", "votes",
-                "creator" });
-        tblActivities.setSelectable(true);
-        tblActivities.setWidth("100%");
+		// table for showing the activities related to the event
+		activities.addContainerFilter(new Equal("event", myEvent));
+		activities.applyFilters();
+		tblActivities = new Table("Activities", activities);
+		tblActivities.setVisibleColumns(new String[] { "name", "votes",
+				"creator" });
+		tblActivities.setSelectable(true);
+		tblActivities.setWidth("100%");
 
-        // shrunk table to contents
-        tblActivities.setPageLength(0);
+		// shrunk table to contents
+		tblActivities.setPageLength(0);
 
-        v.addComponent(tblActivities);
+		v.addComponent(tblActivities);
 
-        // buttons for activity voting
-        v.addComponent(initActivityButtonPanel());
+		// buttons for activity voting
+		v.addComponent(initActivityButtonPanel());
 
-        // buttons for joining/leaving
-        v.addComponent(initEventButtonPanel());
+		// buttons for joining/leaving
+		v.addComponent(initEventButtonPanel());
 
-        p.setContent(v);
+		p.setContent(v);
 
-        return p;
-    }
+		return p;
+	}
 
-    public Label createUserListLabel() {
-        // build userlist from the set and format the string
-        String userlist = "Current participants: ";
-        for (User s : myEvent.getPartisipants()) {
-            userlist += s.getName() + ", ";
-        }
-        // drop the last comma and whitespace
-        userlist = userlist.substring(0, userlist.length() - 2) + ".";
+	public Label createUserListLabel() {
+		// build userlist from the set and format the string
+		String userlist = "Current participants: ";
+		for (User s : myEvent.getPartisipants()) {
+			userlist += s.getName() + ", ";
+		}
+		// drop the last comma and whitespace
+		userlist = userlist.substring(0, userlist.length() - 2) + ".";
 
-        Label lbl = new Label(userlist, ContentMode.PREFORMATTED);
-        return lbl;
-    }
+		Label lbl = new Label(userlist, ContentMode.PREFORMATTED);
+		return lbl;
+	}
 
-    public void updateUserListLabel() {
-        // build userlist from the set and format the string
-        String userlist = "Current participants: ";
-        for (User s : myEvent.getPartisipants()) {
-            userlist += s.getName() + ", ";
-        }
-        // drop the last comma and whitespace
-        userlist = userlist.substring(0, userlist.length() - 2) + ".";
-        lblUserList.setValue(userlist);
-    }
+	public void updateUserListLabel() {
+		// build userlist from the set and format the string
+		String userlist = "Current participants: ";
+		for (User s : myEvent.getPartisipants()) {
+			userlist += s.getName() + ", ";
+		}
+		// drop the last comma and whitespace
+		userlist = userlist.substring(0, userlist.length() - 2) + ".";
+		lblUserList.setValue(userlist);
+	}
 
-    // buttons for joining/leaving
-    private Panel initEventButtonPanel() {
-        Panel p = new Panel();
-        HorizontalLayout h = new HorizontalLayout();
+	private void updateTables() {
+		events.refresh();
+		activities.refresh();
+		activities.removeAllContainerFilters();
+		activities.addContainerFilter(new Equal("event", myEvent));
+		activities.applyFilters();
+		tblActivities.setContainerDataSource(tblActivities
+				.getContainerDataSource());
+		tblActivities.setVisibleColumns(new String[] { "name", "votes",
+				"creator" });
+	}
 
-        Button btnJoinEvent = new Button("Join this event!");
-        btnJoinEvent.addClickListener(new ClickListener() {
-            User currentUser;
+	// buttons for joining/leaving
+	private Panel initEventButtonPanel() {
+		Panel p = new Panel();
+		HorizontalLayout h = new HorizontalLayout();
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                // get current user
-                try {
-                    currentUser = (User) getParent().getUI().getSession()
-                            .getAttribute("user");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (currentUser != null) {
-                    myEvent.addPartisipant(currentUser);
-                    updateUserListLabel();
-                    eventEntity.commit();
-                }
-            }
-        });
-        h.addComponent(btnJoinEvent);
+		Button btnJoinEvent = new Button("Join this event!");
+		btnJoinEvent.addClickListener(new ClickListener() {
+			User currentUser;
 
-        Button btnLeaveEvent = new Button("Leave this event");
-        btnLeaveEvent.addClickListener(new ClickListener() {
-            User currentUser;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				// get current user
+				try {
+					currentUser = (User) getParent().getUI().getSession()
+							.getAttribute("user");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (currentUser != null) {
+					myEvent.addPartisipant(currentUser);
+					updateUserListLabel();
+					events.addEntity(myEvent);
+					events.commit();
+					updateTables();
+				}
+			}
+		});
+		h.addComponent(btnJoinEvent);
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                // get current user
-                try {
-                    currentUser = (User) getParent().getUI().getSession()
-                            .getAttribute("user");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (currentUser != null) {
-                    myEvent.getPartisipants().remove(currentUser);
-                    updateUserListLabel();
-                    eventEntity.commit();
-                }
-            }
-        });
-        h.addComponent(btnLeaveEvent);
+		Button btnLeaveEvent = new Button("Leave this event");
+		btnLeaveEvent.addClickListener(new ClickListener() {
+			User currentUser;
 
-        p.setContent(h);
-        return p;
-    }
+			@Override
+			public void buttonClick(ClickEvent event) {
+				// get current user
+				try {
+					currentUser = (User) getParent().getUI().getSession()
+							.getAttribute("user");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (currentUser != null) {
+					myEvent.getPartisipants().remove(currentUser);
+					updateUserListLabel();
+					events.addEntity(myEvent);
+					events.commit();
+					updateTables();
+				}
+			}
+		});
+		h.addComponent(btnLeaveEvent);
 
-    // up/down vote buttons for selected activity
-    private Panel initActivityButtonPanel() {
-        Panel p = new Panel();
-        HorizontalLayout h = new HorizontalLayout();
+		p.setContent(h);
+		return p;
+	}
 
-        Button btnUpVote = new Button("Good idea");
-        btnUpVote.addClickListener(new ClickListener() {
-            Object tblIndex;
-            Activity selectedActivity;
-            User currentUser;
+	// up/down vote buttons for selected activity
+	private Panel initActivityButtonPanel() {
+		Panel p = new Panel();
+		HorizontalLayout h = new HorizontalLayout();
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    tblIndex = tblActivities.getValue();
-                    selectedActivity = activities.getItem(tblIndex).getEntity();
-                    // get current user
-                    currentUser = (User) getParent().getUI().getSession()
-                            .getAttribute("user");
+		Button btnUpVote = new Button("Good idea");
+		btnUpVote.addClickListener(new ClickListener() {
+			Object tblIndex;
+			Activity selectedActivity;
+			User currentUser;
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // check that user exists, activity is selected and user is part
-                // of the event
-                if (currentUser != null
-                        && selectedActivity != null
-                        && selectedActivity.getEvent().getPartisipants()
-                                .contains(currentUser)) {
-                    selectedActivity.vote(Thumb.UP, currentUser);
-                    // add user to list of people who have voted for this
-                    // activity
-                    selectedActivity.getVoters().add(currentUser);
-                    activities.getItem(tblIndex).commit();
-                    events.refresh();
-                    activities.refresh();
-                }
-            }
-        });
-        h.addComponent(btnUpVote);
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					tblIndex = tblActivities.getValue();
+					selectedActivity = activities.getItem(tblIndex).getEntity();
+					// get current user
+					currentUser = (User) getParent().getUI().getSession()
+							.getAttribute("user");
 
-        Button btnDownVote = new Button("Bad idea");
-        btnDownVote.addClickListener(new ClickListener() {
-            Object tblIndex;
-            Activity selectedActivity;
-            User currentUser;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				// check that user exists, activity is selected and user is part
+				// of the event
+				if (currentUser != null && selectedActivity != null
+						&& myEvent.getPartisipants().contains(currentUser)) {
+					selectedActivity.vote(Thumb.UP, currentUser);
+					// add user to list of people who have voted for this
+					// activity
+					selectedActivity.getVoters().add(currentUser);
+					activities.addEntity(selectedActivity);
+					activities.commit();
+					events.commit();
+					updateTables();
+				}
+			}
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    tblIndex = tblActivities.getValue();
-                    selectedActivity = activities.getItem(tblIndex).getEntity();
-                    // get current user
-                    currentUser = (User) getParent().getUI().getSession()
-                            .getAttribute("user");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // check that user exists, activity is selected and user is part
-                // of the event
-                if (currentUser != null
-                        && selectedActivity != null
-                        && selectedActivity.getEvent().getPartisipants()
-                                .contains(currentUser)) {
-                    selectedActivity.vote(Thumb.DOWN, currentUser);
-                    // add user to list of people who have voted for this
-                    // activity
-                    selectedActivity.getVoters().add(currentUser);
-                    activities.getItem(tblIndex).commit();
-                    events.refresh();
-                    activities.refresh();
-                }
-            }
-        });
+		});
+		h.addComponent(btnUpVote);
 
-        h.addComponent(btnDownVote);
+		Button btnDownVote = new Button("Bad idea");
+		btnDownVote.addClickListener(new ClickListener() {
+			Object tblIndex;
+			Activity selectedActivity;
+			User currentUser;
 
-        p.setContent(h);
-        return p;
-    }
+			@Override
+			public void buttonClick(ClickEvent event) {
+				try {
+					tblIndex = tblActivities.getValue();
+					selectedActivity = activities.getItem(tblIndex).getEntity();
+					// get current user
+					currentUser = (User) getParent().getUI().getSession()
+							.getAttribute("user");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				// check that user exists, activity is selected and user is part
+				// of the event
+				if (currentUser != null && selectedActivity != null
+						&& myEvent.getPartisipants().contains(currentUser)) {
+					selectedActivity.vote(Thumb.DOWN, currentUser);
+					// add user to list of people who have voted for this
+					// activity
+					selectedActivity.getVoters().add(currentUser);
+					activities.addEntity(selectedActivity);
+					activities.commit();
+					events.commit();
+					updateTables();
+				}
+			}
+		});
+
+		h.addComponent(btnDownVote);
+
+		p.setContent(h);
+		return p;
+	}
 }

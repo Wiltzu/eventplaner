@@ -25,7 +25,7 @@ public class MyEvent {
 	@JoinTable(name = "USER_EVENT", joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID") })
 	private Set<User> partisipants;
 	// default = lazy
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "event")
 	private Set<Activity> activities;
 	@OneToOne
 	private User creator;

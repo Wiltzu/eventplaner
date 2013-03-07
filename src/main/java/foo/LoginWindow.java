@@ -49,6 +49,9 @@ public class LoginWindow extends Window {
 		setWidth("150px");
 		setContent(initLoginLayout());
 		setResizable(false);
+		setModal(true);
+		center();
+		setClosable(false);
 	}
 
 	private VerticalLayout initLoginLayout() {

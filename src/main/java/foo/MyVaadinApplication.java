@@ -33,7 +33,7 @@ import com.vaadin.ui.themes.Reindeer;
  * The Application's "main" class Test comment! --Brigesh
  */
 @SuppressWarnings("serial")
-//@PreserveOnRefresh
+@PreserveOnRefresh
 public class MyVaadinApplication extends UI {
 	
 	private ContentPanel contentPanel;
