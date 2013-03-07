@@ -3,6 +3,8 @@ package foo;
 import java.io.File;
 
 import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.filter.Compare.Equal;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
@@ -33,6 +35,11 @@ public class EventWindow extends Window {
     private JPAContainer<Activity> activities;
     private Table tblActivities;
     private Label lblUserList;
+    private Button btnJoinEvent;
+    private Button btnLeaveEvent;
+    private Button btnUpVote;
+    private Button btnDownVote;
+    private Button addActivity;
 
     public EventWindow(MyEvent myEvent, JPAContainer<Activity> activities,
             JPAContainer<MyEvent> events) {
@@ -89,6 +96,34 @@ public class EventWindow extends Window {
         updateTables();
         tblActivities.setSelectable(true);
         tblActivities.setImmediate(true);
+
+        // deprecated.. but works
+        tblActivities.addListener(new Property.ValueChangeListener() {
+
+            Object tblIndex;
+            Activity selectedActivity;
+            User currentUser;
+
+            public void valueChange(ValueChangeEvent event) {
+                try {
+                    tblIndex = tblActivities.getValue();
+                    selectedActivity = activities.getItem(tblIndex).getEntity();
+                    // get current user
+                    currentUser = (User) getCurrentUser();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // check that user exists, activity is selected and user is part
+                // of the event
+                if (currentUser != null && selectedActivity != null) {
+                    refreshButtonState(currentUser);
+
+                }
+            }
+
+        });
+
         tblActivities.setWidth("100%");
 
         // shrunk table to contents
@@ -105,8 +140,24 @@ public class EventWindow extends Window {
         v.addComponent(initAddActivityPanel());
 
         p.setContent(v);
-
+        refreshButtonState((User) getCurrentUser());
         return p;
+    }
+
+    private void refreshButtonState(User currentUser) {
+        if (myEvent.getPartisipants().contains(currentUser)) {
+            btnJoinEvent.setEnabled(false);
+            btnLeaveEvent.setEnabled(true);
+            addActivity.setEnabled(true);
+            btnUpVote.setEnabled(true);
+            btnDownVote.setEnabled(true);
+        } else {
+            btnLeaveEvent.setEnabled(false);
+            addActivity.setEnabled(false);
+            btnUpVote.setEnabled(false);
+            btnDownVote.setEnabled(false);
+            btnJoinEvent.setEnabled(true);
+        }
     }
 
     public Label createUserListLabel() {
@@ -150,7 +201,7 @@ public class EventWindow extends Window {
         Panel p = new Panel();
         HorizontalLayout h = new HorizontalLayout();
 
-        Button btnJoinEvent = new Button("Join this event!");
+        btnJoinEvent = new Button("Join this event!");
         btnJoinEvent.addClickListener(new ClickListener() {
             User currentUser;
 
@@ -168,12 +219,13 @@ public class EventWindow extends Window {
                     events.addEntity(myEvent);
                     events.commit();
                     updateTables();
+                    refreshButtonState(currentUser);
                 }
             }
         });
         h.addComponent(btnJoinEvent);
 
-        Button btnLeaveEvent = new Button("Leave this event");
+        btnLeaveEvent = new Button("Leave this event");
         btnLeaveEvent.addClickListener(new ClickListener() {
             User currentUser;
 
@@ -191,6 +243,7 @@ public class EventWindow extends Window {
                     events.addEntity(myEvent);
                     events.commit();
                     updateTables();
+                    refreshButtonState(currentUser);
                 }
             }
         });
@@ -205,7 +258,7 @@ public class EventWindow extends Window {
         Panel p = new Panel();
         HorizontalLayout h = new HorizontalLayout();
 
-        Button btnUpVote = new Button("Good idea");
+        btnUpVote = new Button("Good idea");
         btnUpVote.addClickListener(new ClickListener() {
             Object tblIndex;
             Activity selectedActivity;
@@ -240,7 +293,7 @@ public class EventWindow extends Window {
         });
         h.addComponent(btnUpVote);
 
-        Button btnDownVote = new Button("Bad idea");
+        btnDownVote = new Button("Bad idea");
         btnDownVote.addClickListener(new ClickListener() {
             Object tblIndex;
             Activity selectedActivity;
@@ -281,7 +334,7 @@ public class EventWindow extends Window {
     private Panel initAddActivityPanel() {
         Panel p = new Panel();
         final VerticalLayout v = new VerticalLayout();
-        Button addActivity = new Button("Add new activity");
+        addActivity = new Button("Add new activity");
 
         addActivity.addClickListener(new ClickListener() {
             User currentUser;
