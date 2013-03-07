@@ -111,7 +111,7 @@ public class MyVaadinApplication extends UI {
                 .getAbsolutePath();
 
         FileResource resource = new FileResource(new File(basepath
-                + "/WEB-INF/images/topBannerPlaceholder.png"));
+                + "/WEB-INF/images/bottomBannerPlaceholder.png"));
 
         Embedded image = new Embedded("", resource);
 
