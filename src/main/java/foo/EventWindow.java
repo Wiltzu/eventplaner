@@ -1,12 +1,16 @@
 package foo;
 
+import java.io.File;
+
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.data.util.filter.Compare.Equal;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -283,10 +287,12 @@ public class EventWindow extends Window {
 
             @Override
             public void buttonClick(ClickEvent event) {
+                updateTables();
+
                 final TextField txtActivityName = new TextField();
                 final Button btnConfirm = new Button("Add!");
 
-                HorizontalLayout h = new HorizontalLayout();
+                final HorizontalLayout h = new HorizontalLayout();
                 h.addComponent(txtActivityName);
                 h.addComponent(btnConfirm);
                 v.addComponent(h);
@@ -311,11 +317,22 @@ public class EventWindow extends Window {
 
                             txtActivityName.setEnabled(false);
                             btnConfirm.setEnabled(false);
+
+                            String basepath = VaadinService.getCurrent()
+                                    .getBaseDirectory().getAbsolutePath();
+
+                            FileResource resource = new FileResource(new File(
+                                    basepath + "/WEB-INF/images/greenOkay.png"));
+
+                            Embedded image = new Embedded("", resource);
+
+                            h.addComponent(image);
                         } else {
                             Notification.show("Give name to your activity!");
                         }
                     }
                 });
+
             }
         });
 
