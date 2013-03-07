@@ -35,25 +35,24 @@ import com.vaadin.ui.themes.Reindeer;
 @SuppressWarnings("serial")
 @PreserveOnRefresh
 public class MyVaadinApplication extends UI {
-	
-	private ContentPanel contentPanel;
+
+    private ContentPanel contentPanel;
 
     public MyVaadinApplication() {
-    	
+
     }
 
     @Override
     protected void init(VaadinRequest request) {
-        	addWindow(new LoginWindow(this));
-        	setContent(initLayout());
-        	getPage().setTitle("EventPlanner");
+        addWindow(new LoginWindow(this));
+        setContent(initLayout());
+        getPage().setTitle("EventPlanner");
     }
 
     private VerticalLayout initLayout() {
         VerticalLayout v = new VerticalLayout();
         v.setStyleName(Reindeer.LAYOUT_BLUE);
         v.setSpacing(false);
-        
 
         Panel topBanner = initTopBanner();
         v.addComponent(topBanner);
@@ -95,7 +94,7 @@ public class MyVaadinApplication extends UI {
         FileResource resource = new FileResource(new File(basepath
                 + "/WEB-INF/images/topBannerPlaceholder.png"));
 
-        Embedded image = new Embedded("TopBanner placeholder image", resource);
+        Embedded image = new Embedded("", resource);
 
         VerticalLayout v = new VerticalLayout();
         v.addComponent(image);
@@ -114,8 +113,7 @@ public class MyVaadinApplication extends UI {
         FileResource resource = new FileResource(new File(basepath
                 + "/WEB-INF/images/topBannerPlaceholder.png"));
 
-        Embedded image = new Embedded("BottomBanner placeholder image",
-                resource);
+        Embedded image = new Embedded("", resource);
 
         VerticalLayout v = new VerticalLayout();
         v.addComponent(image);
@@ -123,8 +121,8 @@ public class MyVaadinApplication extends UI {
 
         return bottomBanner;
     }
-    
+
     public void updateTables() {
-    	contentPanel.updateTables();
+        contentPanel.updateTables();
     }
 }
