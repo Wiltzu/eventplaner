@@ -322,7 +322,7 @@ public class EventWindow extends Window {
                                     .getBaseDirectory().getAbsolutePath();
 
                             FileResource resource = new FileResource(new File(
-                                    basepath + "/WEB-INF/images/greenOkay.png"));
+                                    basepath + "/WEB-INF/images/greenokay.png"));
 
                             Embedded image = new Embedded("", resource);
 
