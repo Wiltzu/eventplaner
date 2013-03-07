@@ -49,7 +49,6 @@ public class ContentPanel extends CustomComponent {
         allEvents = JPAContainerFactory.make(MyEvent.class, "database");
         
         activities = JPAContainerFactory.make(Activity.class, "database");
-        addData();
 
         tabsheet = new TabSheet();
         tabsheet.setSizeFull();
@@ -121,41 +120,6 @@ public class ContentPanel extends CustomComponent {
 	private Object getCurrentUser() {
 		return VaadinService.getCurrentRequest().getWrappedSession().getAttribute("user");
 	}
-
-    // only for testing
-    private void addData() {
-        User matti = new User();
-        matti.setName("matti");
-        try {
-            matti.setPassword(Password.getSaltedHash("salainen"));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        users.addEntity(matti);
-        User pekka = new User();
-        pekka.setName("Pekka");
-        try {
-            pekka.setPassword(Password.getSaltedHash("crypt"));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        users.addEntity(matti);
-        users.addEntity(pekka);
-
-        MyEvent event = new MyEvent("event", "This is cool event", pekka);
-        event.addPartisipant(pekka);
-        event.addPartisipant(matti);
-        Activity activity = new Activity("Aktiviteetti", pekka);
-        getActivitys().addEntity(activity);
-        event.addActivity(activity);
-        myEvents.addEntity(event);
-
-        myEvents.commit();
-        users.commit();
-        getActivitys().commit();
-    }
 
     public JPAContainer<Activity> getActivitys() {
         return activities;

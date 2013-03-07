@@ -58,11 +58,8 @@ public class EventWindow extends Window {
 		v.addComponent(lblUserList);
 
 		// table for showing the activities related to the event
-		activities.addContainerFilter(new Equal("event", myEvent));
-		activities.applyFilters();
 		tblActivities = new Table("Activities", activities);
-		tblActivities.setVisibleColumns(new String[] { "name", "votes",
-				"creator" });
+		updateTables();
 		tblActivities.setSelectable(true);
 		tblActivities.setWidth("100%");
 

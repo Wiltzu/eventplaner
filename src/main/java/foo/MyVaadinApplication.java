@@ -46,6 +46,7 @@ public class MyVaadinApplication extends UI {
     protected void init(VaadinRequest request) {
         	addWindow(new LoginWindow(this));
         	setContent(initLayout());
+        	getPage().setTitle("EventPlanner");
     }
 
     private VerticalLayout initLayout() {

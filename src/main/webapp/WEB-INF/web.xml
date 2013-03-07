@@ -8,7 +8,7 @@
     </context-param>
     <servlet>
         <servlet-name>Vaadin</servlet-name>
-        <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+        <servlet-class>foo.servlet.MyVaadinServlet</servlet-class>
         <init-param>
             <description>Vaadin UI to display</description>
             <param-name>UI</param-name>
