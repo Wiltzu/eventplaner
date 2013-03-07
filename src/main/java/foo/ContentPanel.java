@@ -1,33 +1,23 @@
 package foo;
 
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-
 import com.vaadin.addon.jpacontainer.JPAContainer;
 import com.vaadin.addon.jpacontainer.JPAContainerFactory;
-import com.vaadin.data.Container;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Like;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 import foo.domain.Activity;
 import foo.domain.MyEvent;
 import foo.domain.User;
-import foo.security.Password;
 
 public class ContentPanel extends CustomComponent {
 
@@ -47,7 +37,7 @@ public class ContentPanel extends CustomComponent {
         users = JPAContainerFactory.make(User.class, "database");
         myEvents = JPAContainerFactory.make(MyEvent.class, "database");
         allEvents = JPAContainerFactory.make(MyEvent.class, "database");
-        
+
         activities = JPAContainerFactory.make(Activity.class, "database");
 
         tabsheet = new TabSheet();
@@ -55,71 +45,71 @@ public class ContentPanel extends CustomComponent {
 
         HorizontalLayout myEventsLayout = initMyEventsTable();
         HorizontalLayout allEventsLayout = initAllEventsLayout();
-        
-        tblFriends = new Table("Events", myEvents);
 
-        
+        tblFriends = new Table("Events", myEvents);
 
         tabsheet.addTab(allEventsLayout, "All Events");
         tabsheet.addTab(myEventsLayout, "My Events");
-        tabsheet.addTab(tblFriends, "Friend's Events");
-        tabsheet.addTab(new Label("Contents of the third tab"),
-                "My Past events");
 
         setCompositionRoot(tabsheet);
         setSizeFull();
     }
 
-	private HorizontalLayout initAllEventsLayout() {
-		HorizontalLayout eventLayout = null;
-		
-        if(tblAllEvents == null) {
-        	eventLayout = new HorizontalLayout();
-        	eventLayout.setId("All Events");
+    private HorizontalLayout initAllEventsLayout() {
+        HorizontalLayout eventLayout = null;
+
+        if (tblAllEvents == null) {
+            eventLayout = new HorizontalLayout();
+            eventLayout.setId("All Events");
             eventLayout.setSpacing(true);
-            
+
             tblAllEvents = new Table(null, allEvents);
             tblAllEvents.setSelectable(true);
-            Button btnEdit = new Button("View Details", new ViewEventDetailsClickListener());
-            
+            Button btnEdit = new Button("View Details",
+                    new ViewEventDetailsClickListener());
+
             eventLayout.addComponent(tblAllEvents);
             eventLayout.addComponent(btnEdit);
         }
-        
-        tblAllEvents.setVisibleColumns(new String[] { "name", "description", "creator" });
-        
-        
-		return eventLayout;
-	}
+
+        tblAllEvents.setVisibleColumns(new String[] { "name", "description",
+                "creator" });
+
+        return eventLayout;
+    }
 
     private HorizontalLayout initMyEventsTable() {
-    	HorizontalLayout myEventLayout = null;
+        HorizontalLayout myEventLayout = null;
 
         if (getCurrentUser() != null) {
             currentUser = (User) getCurrentUser();
-            myEvents.addContainerFilter(new Like("partisipants.id", Integer.toString(currentUser.getId())));
+            myEvents.addContainerFilter(new Like("partisipants.id", Integer
+                    .toString(currentUser.getId())));
         }
 
         if (tblMyEvents == null) {
-        	myEventLayout = new HorizontalLayout();
-        	myEventLayout.setId("My Events");
-        	myEventLayout.setSpacing(true);
-        	
+            myEventLayout = new HorizontalLayout();
+            myEventLayout.setId("My Events");
+            myEventLayout.setSpacing(true);
+
             tblMyEvents = new Table(null, myEvents);
             tblMyEvents.setSelectable(true);
-            Button btnEdit = new Button("View Details", new ViewEventDetailsClickListener());
-            
+            Button btnEdit = new Button("View Details",
+                    new ViewEventDetailsClickListener());
+
             myEventLayout.addComponent(tblMyEvents);
             myEventLayout.addComponent(btnEdit);
 
         }
-        tblMyEvents.setVisibleColumns(new String[] { "name", "description", "creator" });
+        tblMyEvents.setVisibleColumns(new String[] { "name", "description",
+                "creator" });
         return myEventLayout;
     }
 
-	private Object getCurrentUser() {
-		return VaadinService.getCurrentRequest().getWrappedSession().getAttribute("user");
-	}
+    private Object getCurrentUser() {
+        return VaadinService.getCurrentRequest().getWrappedSession()
+                .getAttribute("user");
+    }
 
     public JPAContainer<Activity> getActivitys() {
         return activities;
@@ -130,53 +120,53 @@ public class ContentPanel extends CustomComponent {
         allEvents.refresh();
         users.refresh();
         activities.refresh();
-        tblMyEvents.setContainerDataSource(tblMyEvents
+        tblMyEvents
+                .setContainerDataSource(tblMyEvents.getContainerDataSource());
+        tblAllEvents.setContainerDataSource(tblAllEvents
                 .getContainerDataSource());
-        tblAllEvents.setContainerDataSource(tblAllEvents.getContainerDataSource());
-        tblFriends
-                .setContainerDataSource(tblFriends.getContainerDataSource());
+        tblFriends.setContainerDataSource(tblFriends.getContainerDataSource());
         initMyEventsTable();
         initAllEventsLayout();
     }
-    
+
     private class ViewEventDetailsClickListener implements Button.ClickListener {
-    	  boolean isAdded = false;
-          MyEvent selectedEvent;
-          Object tblIndex;
+        boolean isAdded = false;
+        MyEvent selectedEvent;
+        Object tblIndex;
 
-          @Override
-          public void buttonClick(ClickEvent event) {
-        	  Component selectedTab = tabsheet.getSelectedTab();
-              try {
-              	if(selectedTab.getId().equals("All Events")) {
-              		tblIndex = tblAllEvents.getValue();
-              		selectedEvent = allEvents.getItem(tblIndex).getEntity();
-              	}
-              	// My Events
-              	else { 
-              		tblIndex = tblMyEvents.getValue();
-              		selectedEvent = myEvents.getItem(tblIndex).getEntity();
-              	}
-                  
-              } catch (NullPointerException e) {
-                  Notification.show("Select event to view details.");
-              }
+        @Override
+        public void buttonClick(ClickEvent event) {
+            Component selectedTab = tabsheet.getSelectedTab();
+            try {
+                if (selectedTab.getId().equals("All Events")) {
+                    tblIndex = tblAllEvents.getValue();
+                    selectedEvent = allEvents.getItem(tblIndex).getEntity();
+                }
+                // My Events
+                else {
+                    tblIndex = tblMyEvents.getValue();
+                    selectedEvent = myEvents.getItem(tblIndex).getEntity();
+                }
 
-              // only one event window up at a time
-              if (isAdded) {
-                  parentUI.removeWindow(eventWindow);
-                  isAdded = false;
-              }
+            } catch (NullPointerException e) {
+                Notification.show("Select event to view details.");
+            }
 
-              // need to have event selected from the event table
-              // add the window
-              if (selectedEvent != null) {
-                  eventWindow = new EventWindow(selectedEvent, activities,
-                          myEvents);
-                  eventWindow.center();
-                  parentUI.addWindow(eventWindow);
-                  isAdded = true;
-              }
-          }
+            // only one event window up at a time
+            if (isAdded) {
+                parentUI.removeWindow(eventWindow);
+                isAdded = false;
+            }
+
+            // need to have event selected from the event table
+            // add the window
+            if (selectedEvent != null) {
+                eventWindow = new EventWindow(selectedEvent, activities,
+                        myEvents);
+                eventWindow.center();
+                parentUI.addWindow(eventWindow);
+                isAdded = true;
+            }
+        }
     }
 }
