@@ -1,0 +1,18 @@
+The basic functionality is described below:
+
+1. Log in!
+1b) You need to register! Enter a user name, and a password. You will be sent back to 1.
+
+You are now logged in. Now you can:
+
+2a) Create new event!
+2b) View existing event!
+
+If you chose 2a)
+Fill in the event details, optionally add activies you want. Click create to finish creating the event.
+
+If you chose 2b)
+Click on an event on the all events tab. Click view event details button.
+On the event view window you can join the event. If you have not joined the event, you can not vote or add new activities.
+After joining, you can leave, vote and add new activities.
+

@@ -1,0 +1,8 @@
+Aleksi Haapsaari and Anssi Kinnuned dropped from course before any coding work on the project was done.
+
+As a result, Antti Laine and Ville Ahti wrote the application together.
+
+
+Antti was responsible of the overall layout and event viewing details. Ville masterminded
+the database and login functionality. Everything else was pretty much coded together with work here and there, as stuff came up.
+GitHub commit history pretty much shows where each of us worked at a time.
