@@ -62,7 +62,7 @@ public class EventWindow extends Window {
         // format the string here...
         String creatorDescribes = "The event creator, " + "<b>"
                 + myEvent.getCreator().getName() + "</b>"
-                + " describes the event as:";
+                + ", describes the event as:";
         String eventDescription = myEvent.getDescription();
 
         // blockquote? this might be horribly wrong
