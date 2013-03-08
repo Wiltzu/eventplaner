@@ -11,6 +11,15 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.server.VaadinServlet;
 
+/**
+ * <p>
+ * This class extends VaadinServlet's functionality. It adds a creation of H2
+ * database to its initialization.
+ * </p>
+ * 
+ * @author Ville Ahti
+ * 
+ */
 public class MyVaadinServlet extends VaadinServlet {
 
 	private Logger logger = LoggerFactory.getLogger(MyVaadinServlet.class);

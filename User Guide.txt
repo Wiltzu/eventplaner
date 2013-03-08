@@ -9,7 +9,7 @@ You are now logged in. Now you can:
 2b) View existing event!
 
 If you chose 2a)
-Fill in the event details, optionally add activies you want. Click create to finish creating the event.
+Fill in the event details, optionally add activities you want. Click create to finish creating the event.
 
 If you chose 2b)
 Click on an event on the all events tab. Click view event details button.

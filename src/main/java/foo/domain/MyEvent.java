@@ -1,5 +1,6 @@
 package foo.domain;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,8 +15,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+/**
+ * <p>
+ * This class represents events in this application.
+ * </p>
+ * 
+ * @author Ville Ahti
+ * 
+ */
 @Entity
-public class MyEvent {
+public class MyEvent implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -30,82 +39,212 @@ public class MyEvent {
 	@OneToOne
 	private User creator;
 
-	// for JPA
+	/**
+	 * <p>
+	 * Default constructor for JPA only.
+	 * <p>
+	 */
 	public MyEvent() {
-		initLists();
+		initSets();
 	}
 
+	/**
+	 * <p>
+	 * Main contstructor for creating new instances of this class.
+	 * </p>
+	 * 
+	 * @param name
+	 *            of the event
+	 * @param description
+	 *            of the event
+	 * @param creator
+	 *            of the event
+	 */
 	public MyEvent(String name, String description, User creator) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.creator = creator;
-		initLists();
+		initSets();
 		addPartisipant(creator);
 	}
 
+	/**
+	 * <p>
+	 * Getter for event's activities
+	 * </p>
+	 * 
+	 * @return event's activities
+	 */
 	public Set<Activity> getActivities() {
 		return activities;
 	}
 
-	public User getCreator() {
-		return creator;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Set<User> getPartisipants() {
-		return partisipants;
-	}
-
-	public void setPartisipants(Set<User> partisipants) {
-		this.partisipants = partisipants;
-	}
-
-	public void addPartisipant(User user) {
-		this.partisipants.add(user);
-	}
-
-	public void addActivity(Activity activity) {
-		activity.setEvent(this);
-		this.activities.add(activity);
-	}
-	public void addSetOfActivities(Set<Activity> activities) {
-		for(Activity activity : activities) {
-			addActivity(activity);
-		}
-	}
-
+	/**
+	 * <p>
+	 * Setter for event's activities.
+	 * </p>
+	 * 
+	 * @param activities
+	 *            for this event.
+	 */
 	public void setActivities(Set<Activity> activities) {
 		this.activities = activities;
 	}
 
+	/**
+	 * <p>
+	 * Getter for event's creator
+	 * </p>
+	 * 
+	 * @return creator of this event
+	 */
+	public User getCreator() {
+		return creator;
+	}
+
+	/**
+	 * <p>
+	 * Setter for event's creator.
+	 * </p>
+	 * 
+	 * @param creator
+	 *            of this event
+	 */
 	public void setCreator(User creator) {
 		this.creator = creator;
 	}
-	
+
+	/**
+	 * <p>
+	 * Getter for event's id.
+	 * </p>
+	 * 
+	 * @return event's id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * <p>
+	 * Setter for event's id. only for JPA.
+	 * </p>
+	 * 
+	 * @param id
+	 *            of this event
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * <p>
+	 * Getter for event's name.
+	 * </p>
+	 * 
+	 * @return event's name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * <p>
+	 * Setter for event's
+	 * </p>
+	 * 
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * <p>
+	 * Getter for event's description.
+	 * </p>
+	 * 
+	 * @return event's description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * <p>
+	 * Setter for event's description
+	 * </p>
+	 * 
+	 * @param description
+	 *            of this event
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * <p>
+	 * Getter for event's partisipants.
+	 * </p>
+	 * 
+	 * @return set of partisipants
+	 */
+	public Set<User> getPartisipants() {
+		return partisipants;
+	}
+
+	/**
+	 * <p>
+	 * Setter for event's partisipants
+	 * </p>
+	 * 
+	 * @param partisipants
+	 *            to this event
+	 */
+	public void setPartisipants(Set<User> partisipants) {
+		this.partisipants = partisipants;
+	}
+
+	/**
+	 * <p>
+	 * Adds partisipant to this event.
+	 * </p>
+	 * 
+	 * @param partisipant
+	 *            new partisipant to this event
+	 */
+	public void addPartisipant(User partisipant) {
+		this.partisipants.add(partisipant);
+	}
+
+	/**
+	 * <p>
+	 * Adds new activity to this event.
+	 * </p>
+	 * 
+	 * @param activity
+	 *            new activity to this event
+	 */
+	public void addActivity(Activity activity) {
+		activity.setEvent(this);
+		this.activities.add(activity);
+	}
+
+	/**
+	 * <p>
+	 * Adds set of activities to this event.
+	 * </p>
+	 * 
+	 * @param activities
+	 *            set of activities
+	 */
+	public void addSetOfActivities(Set<Activity> activities) {
+		for (Activity activity : activities) {
+			addActivity(activity);
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -160,7 +299,12 @@ public class MyEvent {
 				+ partisipants + "]";
 	}
 
-	private void initLists() {
+	/**
+	 * <p>
+	 * inits sets of this class.
+	 * </p>
+	 */
+	private void initSets() {
 		partisipants = new HashSet<User>();
 		activities = new HashSet<Activity>();
 	}
